@@ -2,7 +2,7 @@
   <header>
     <nav class="navbar">
       <div class="container">
-        <div class="d-flex ">
+        <div class="d-flex">
           <!-- Mobile menu button -->
           <button
             class="btn border-0 d-lg-none"
@@ -19,7 +19,7 @@
             >SabayJay</router-link
           >
           <!-- Desktop menu -->
-          <ul class="navbar-nav d-none d-lg-flex flex-row ms-5 ">
+          <ul class="navbar-nav d-none d-lg-flex flex-row ms-5">
             <li class="nav-item">
               <router-link class="nav-link text-sub-main"
                 ><i class="bi bi-house"></i>Home</router-link
@@ -82,16 +82,20 @@
                 ><i class="bi bi-cart3"></i>Cart</router-link
               >
             </li>
-            <div class="d-flex align-items-center gap-3">
-              <img src="https://i.pravatar.cc/40" class="rounded-circle" />
-            </div>
           </ul>
         </div>
 
-        <!-- Theme toggle -->
-        <button class="btn border-0 themeToggle">
-          <i class="bi bi-brightness-high"></i>
-        </button>
+        <div class="d-flex">
+          <input type="text" class="form-control" placeholder="Search..." />
+          <div class="ms-3">
+            <img
+              id="logoImage"
+              class="rounded-circle"
+              src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
+              alt=""
+            />
+          </div>
+        </div>
       </div>
       <hr class="bg-white w-100" />
     </nav>

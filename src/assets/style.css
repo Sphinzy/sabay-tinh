@@ -25,7 +25,7 @@ body {
 }
 
 .bg-main {
-    background-color: #9f28e3 !important;
+    background-color: #093c87 !important;
 }
 
 #logoImage {
@@ -33,26 +33,35 @@ body {
 }
 
 :root {
-    --bs-main: #9f28e3 !important;
-    --bs-main-rgb: 118, 69, 191 !important;
-    --bs-main-hover: #8b5ad6 !important;
-    --bs-main-active: #6a3bb0 !important;
+    /* ===== MAIN COLOR ===== */
+    --bs-main: #093c87;
+    --bs-main-rgb: 9, 60, 135;
+    --bs-main-hover: #0b4ea8;
+    /* lighter */
+    --bs-main-active: #062b63;
+    /* darker */
 
-    --bs-sub-main: #d2bfe2 !important;
-    --bs-sub-main-rgb: 210, 191, 226 !important;
-    --bs-sub-main-hover: #c3a8dc !important;
-    --bs-sub-main-active: #b494d3 !important;
+    /* ===== SUB MAIN COLOR ===== */
+    --bs-sub-main: #2218c5;
+    --bs-sub-main-rgb: 34, 24, 197;
+    --bs-sub-main-hover: #3a30e0;
+    /* lighter */
+    --bs-sub-main-active: #1a1299;
+    /* darker */
 
-    --bs-color-dark: #040316 !important;
-    --bs-color-light: #ffffff !important;
+    /* ===== BASE COLORS ===== */
+    --bs-color-dark: #040316;
+    --bs-color-light: #ffffff;
 
-    --transition-fast: 0.2s ease-in-out !important;
-    --border-radius-main: 0.5rem !important;
+    /* ===== UI SETTINGS ===== */
+    --transition-fast: 0.2s ease-in-out;
+    --border-radius-main: 0.5rem;
 
-    --bs-cus-success: #bbf0bb !important;
-    --bs-bor-success: #05a300 !important;
-    --bs-cus-danger: #f5d0d0 !important;
-    --bs-bor-danger: #e41414 !important;
+    /* ===== STATUS COLORS ===== */
+    --bs-cus-success: #bbf0bb;
+    --bs-bor-success: #05a300;
+    --bs-cus-danger: #f5d0d0;
+    --bs-bor-danger: #e41414;
 }
 
 /* =========================
