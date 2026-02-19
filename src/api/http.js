@@ -1,4 +1,4 @@
-import { useAuthStores } from "@/stores/auth";
+import { useAuthStores } from "@/store/auth";
 import axios from "axios"
 
 
