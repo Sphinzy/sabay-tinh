@@ -1,10 +1,20 @@
+import ProfileView from "@/views/ProfileView.vue";
 import { createRouter, createWebHistory } from "vue-router";
 // import { useAuthStores } from '@/stores/auth'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
-        { path: '/', name: 'home', component: () => import('@/views/HomeView.vue'), meta: { require: true } },
+        { path: '/', 
+          name: 'home',
+          component: () => import('@/views/HomeView.vue'),
+          meta: { require: true } 
+        },
+        { path: '/profile', 
+          name: 'profile',
+          component: ProfileView,
+          meta: { require: true } 
+        },
     ],
 })
 
