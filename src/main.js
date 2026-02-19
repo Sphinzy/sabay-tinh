@@ -13,11 +13,6 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
-// PrimeVue v4
-import PrimeVue from 'primevue/config'
-// import ToastService from 'primevue/toastservice'
-import Aura from '@primevue/themes/aura'
-
 // Icons
 import * as icons from 'lucide-vue-next'
 
@@ -28,20 +23,6 @@ const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
-
-//  PrimeVue v4 theme setup
-app.use(PrimeVue, {
-    theme: {
-        preset: Aura
-    }
-})
-
-// app.use(ToastService)
-// app.use(Toast, {
-//     position: "bottom-right",
-//     timeout: 1000
-// })
-
 
 
 for (const [key, component] of Object.entries(icons)) {
