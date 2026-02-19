@@ -3,7 +3,7 @@ import axios from "axios"
 
 
 const api = axios.create({
-    baseURL: 'https://blogs2.csm.linkpc.net/api/v1'
+    baseURL: 'https://ecommerce201.csm.linkpc.net'
 })
 
 api.interceptors.request.use(config => {
