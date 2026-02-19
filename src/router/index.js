@@ -1,15 +1,12 @@
 import { createRouter, createWebHistory } from "vue-router";
 // import { useAuthStores } from '@/stores/auth'
 
-const routes = [
-    { path: '', component: () => import('@/views/HomeView.vue')}
-]
-
-
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
-    routes
-});
+    routes: [
+        { path: '/', name: 'home', component: () => import('@/views/HomeView.vue'), meta: { require: true } },
+    ],
+})
 
 // router.beforeEach((to, from) => {
 //   const auth =useAuthStores();

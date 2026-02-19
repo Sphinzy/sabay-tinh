@@ -54,10 +54,12 @@
           </ul>
         </div>
 
-        <!-- Theme toggle -->
-        <button class="btn border-0 themeToggle">
-          <i class="bi bi-brightness-high"></i>
-        </button>
+        <div class="d-flex">
+          <input type="text" class="form-control" placeholder="Search...">
+          <div class="ms-3">
+            <img id="logoImage" class="rounded-circle" src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg" alt="">
+          </div>
+        </div>
       </div>
       <hr class="bg-white w-100" />
     </nav>
