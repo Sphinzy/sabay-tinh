@@ -29,7 +29,7 @@ body {
 }
 
 #logoImage {
-    width: 50px;
+    width: 30px;
 }
 
 :root {
@@ -67,7 +67,9 @@ body {
 /* =========================
         BUTTONS
    ========================= */
-
+.text-main{
+    color: var(--bs-main) !important;
+}
 .btn-main {
     background-color: var(--bs-main) !important;
     border-color: var(--bs-main) !important;
@@ -228,7 +230,8 @@ body {
 
 /* Input Fields Styling */
 input.form-control {
-    border: 2px solid var(--bs-sub-main);
+    height: 40px;
+    /* border: 2px solid var(--bs-sub-main); */
     border-radius: var(--border-radius-main);
     /* padding: 12px 15px; */
     font-size: 16px;
