@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-<template></template>
-=======
 <template>
   <header>
     <nav class="navbar">
@@ -110,4 +107,3 @@ import "@/assets/style.css";
 </script>
 
 <style scoped></style>
->>>>>>> bade6d21ce19a6452c6277b27fd86832891d6248

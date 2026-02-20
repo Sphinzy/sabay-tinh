@@ -1,19 +1,15 @@
 <template>
-    <div>
-        <NavBar>
-            <main>
-                <router-view></router-view>
-            </main>
-        </NavBar>
-    </div>
+  <div>
+    <NavBar>
+    </NavBar>
+    <main>
+        <router-view></router-view>
+    </main>
+  </div>
 </template>
 
 <script setup>
-import NavBar from '@/components/layout/NavBar.vue';
-
-
+import NavBar from "@/components/layout/NavBar.vue";
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
