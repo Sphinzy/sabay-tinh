@@ -13,9 +13,9 @@ export const useAuthStores = defineStore('auth', () => {
     async function Login(email, password) {
         try {
             const res = await api.post('/api/login', { email, password });
-            // if (!res.data.result) {
-            //     throw new Error(res.data.message || 'Login failed')
-            // }
+            if (!res.data.result) {
+                throw new Error(res.data.message || 'Login failed')
+            }
 
             user.value = res.data.data.user;
             token.value = res.data.data.token;

@@ -30,16 +30,13 @@
         <!-- after login  -->
         <div v-if="isLoggedIn" class="d-flex align-items-center">
           <router-link to="/search"><i class="bi bi-search fs-5 text-main me-3"></i></router-link>
-          <router-link class="nav-link px-2" to="/cart">
-            <i class="bi bi-cart3 fs-4 text-main position-relative">
-              <!-- Badge -->
-              <span v-if="cartCount > 0"
-                class="position-absolute start-100 translate-middle bg-danger border border-light rounded-circle"
-                style="top: 15%; padding: 5px;">
-              </span>
-            </i>
+          <router-link to="/cart" class="cart-link position-relative d-inline-block">
+            <i class="bi bi-cart3 fs-4 text-main"></i>
 
-
+            <!-- Badge -->
+            <span v-if="cartCount > 0" class="cart-badge">
+              {{ cartCount > 9 ? '9+' : cartCount }}
+            </span>
           </router-link>
 
           <div class="ms-3">
@@ -82,18 +79,18 @@
 
     <div class="offcanvas-body">
       <ul class="navbar-nav gap-3">
-<li class="nav-item">
-            <router-link class="nav-link text-main" to="/" active-class="active"><i
-                class="bi bi-house"></i>Home</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link text-main" active-class="active" to="/shop"><i
-                class="bi bi-shop"></i>Shop</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link text-main" active-class="active" to="/sell"><i
-                class="bi bi-box-seam"></i>Sell</router-link>
-          </li>
+        <li class="nav-item">
+          <router-link class="nav-link text-main" to="/" active-class="active"><i
+              class="bi bi-house"></i>Home</router-link>
+        </li>
+        <li class="nav-item">
+          <router-link class="nav-link text-main" active-class="active" to="/shop"><i
+              class="bi bi-shop"></i>Shop</router-link>
+        </li>
+        <li class="nav-item">
+          <router-link class="nav-link text-main" active-class="active" to="/sell"><i
+              class="bi bi-box-seam"></i>Sell</router-link>
+        </li>
       </ul>
     </div>
   </div>
@@ -101,11 +98,48 @@
 
 <script setup>
 import "@/assets/style.css";
-import { ref } from "vue";
-let cartCount = ref(1);
-let isLoggedIn = ref(false)
+import { ref } from "vue"
 
+const { cartCount } = defineProps({
+  cartCount: {
+    type: Number,
+    default: 0
+  }
+})
 
+const isLoggedIn = ref(true)
 </script>
 
-<style scoped></style>
+<style scoped>
+.cart-link {
+  position: relative;
+}
+
+.cart-badge {
+  position: absolute;
+  top: 1px;
+  right: -10px;
+
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 11px;
+
+  background-color: #dc3545;
+  color: white;
+
+  border-radius: 50px;
+  border: 2px solid white;
+
+  transition: transform 0.2s ease;
+}
+
+.cart-link:hover .cart-badge {
+  transform: scale(1.1);
+}
+</style>
