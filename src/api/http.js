@@ -2,7 +2,10 @@ import { useAuthStores } from "@/stores/auth";
 import axios from "axios"
 
 const api = axios.create({
-    baseURL: 'https://ecommerce201.csm.linkpc.net'
+    baseURL: 'https://ecommerce201.csm.linkpc.net',
+    headers: {
+        "Content-Type": "application/json"
+    }
 })
 
 api.interceptors.request.use(config => {

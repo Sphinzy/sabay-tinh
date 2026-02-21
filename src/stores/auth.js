@@ -36,8 +36,8 @@ export const useAuthStores = defineStore('auth', () => {
 
     }
 
-    async function Register(firstName, lastName, email, password, confirmPassword) {
-        const res = await api.post('/api/register', { firstName, lastName, email, password, confirmPassword });
+    async function Register({email, name, password, password_confirmation}) {
+        const res = await api.post('/api/register', { email, name, password, password_confirmation });
         // user.value = res.data.data;
         console.log(res);
     }
@@ -47,7 +47,7 @@ export const useAuthStores = defineStore('auth', () => {
         // const getProfile = ref()
         const res = await api.get('/api/profile');
         console.log(res);
-    }
+    }   
 
     return { user, token, isLoggedIn, Login, Logout, Register, Profile }
 
