@@ -8,7 +8,7 @@ export const useAuthStores = defineStore('auth', () => {
     const user = ref(null);
     const token = ref(localStorage.getItem('token'));
     const isLoggedIn = computed(() => !!token.value)
-    console.log(isLoggedIn);
+    // console.log(isLoggedIn);
 
     async function Login(email, password) {
         try {

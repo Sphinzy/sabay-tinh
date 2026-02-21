@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Orders</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<style>
+    /* Background */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #f4f6f9;
+}
+
+/* Container */
+.container {
+  padding: 40px;
+}
+
+/* Header */
+.header h1 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.header p {
+  margin-top: 8px;
+  color: #64748b;
+}
+
+/* Card */
+.card {
+  margin-top: 25px;
+  background: #ffffff;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead th {
+  text-align: left;
+  padding: 14px;
+  font-weight: 600;
+  color: #334155;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+tbody td {
+  padding: 16px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #475569;
+}
+
+tbody tr:hover {
+  background: #f8fafc;
+  transition: 0.2s;
+}
+
+/* Status Badges */
+.badge {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.approved {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.rejected {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.pending {
+  background: #fef9c3;
+  color: #ca8a04;
+}
+
+/* Actions */
+.text-center {
+  text-align: center;
+  cursor: pointer;
+  font-size: 20px;
+  letter-spacing: 2px;
+}
+</style>
+<body>
+
+    <div class="container">
+
+        <div class="header">
+            <h1>Seller Orders</h1>
+            <p>Manage and review pending seller orders</p>
+        </div>
+
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Customer Name</th>
+                        <th>Price</th>
+                        <th>Phone</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>Laptop Pro</td>
+                        <td>John Doe</td>
+                        <td>$1299.99</td>
+                        <td>+1 (555) 123-4567</td>
+                        <td>2024-02-18</td>
+                        <td><span class="badge rejected">Rejected</span></td>
+                        <td class="text-center">•••</td>
+                    </tr>
+
+                    <tr>
+                        <td>Wireless Headphones</td>
+                        <td>Jane Smith</td>
+                        <td>$199.99</td>
+                        <td>+1 (555) 234-5678</td>
+                        <td>2024-02-17</td>
+                        <td><span class="badge approved">Approved</span></td>
+                        <td class="text-center">•••</td>
+                    </tr>
+
+                    <tr>
+                        <td>USB-C Cable</td>
+                        <td>Bob Johnson</td>
+                        <td>$29.99</td>
+                        <td>+1 (555) 345-6789</td>
+                        <td>2024-02-16</td>
+                        <td><span class="badge pending">Pending</span></td>
+                        <td class="text-center">•••</td>
+                    </tr>
+
+                    <tr>
+                        <td>Monitor 4K</td>
+                        <td>Alice Williams</td>
+                        <td>$599.99</td>
+                        <td>+1 (555) 456-7890</td>
+                        <td>2024-02-15</td>
+                        <td><span class="badge rejected">Rejected</span></td>
+                        <td class="text-center">•••</td>
+                    </tr>
+
+                    <tr>
+                        <td>Mechanical Keyboard</td>
+                        <td>Charlie Brown</td>
+                        <td>$149.99</td>
+                        <td>+1 (555) 567-8901</td>
+                        <td>2024-02-14</td>
+                        <td><span class="badge pending">Pending</span></td>
+                        <td class="text-center">•••</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

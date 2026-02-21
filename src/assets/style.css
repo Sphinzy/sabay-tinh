@@ -58,10 +58,12 @@ body {
     --border-radius-main: 0.5rem;
 
     /* ===== STATUS COLORS ===== */
-    --bs-cus-success: #bbf0bb;
-    --bs-bor-success: #05a300;
-    --bs-cus-danger: #f5d0d0;
-    --bs-bor-danger: #e41414;
+    --bs-cus-success: #dcfce7;
+    --bs-bor-success: #16a34a;
+    --bs-cus-danger: #fee2e2;
+    --bs-bor-danger: #dc2626;
+    --bs-cus-warning: #fef9c3;
+    --bs-bor-warning: #ca8a04;
 }
 
 /* =========================
@@ -430,7 +432,21 @@ select.form-select.error {
     border-radius: 5px !important;
     color: #a12a2a !important;
 }
-
+.badge-success{
+    background-color: var(--bs-cus-success) !important;
+    color: var(--bs-bor-success) !important;
+    padding: 7px 10px !important;
+}
+.badge-danger {
+    background-color: var(--bs-cus-danger) !important;
+    color: var(--bs-bor-danger) !important;
+    padding: 7px 10px !important;
+}
+.badge-warning {
+    background-color: var(--bs-cus-warning) !important;
+    color: var(--bs-bor-warning) !important;
+    padding: 7px 10px !important;
+}
 /* toast  */
 #toastMsg {
     width: auto;
