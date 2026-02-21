@@ -8,17 +8,12 @@
               <h1 style="padding-top: 40px; padding-left: 10px;">Create an account</h1>
 
               <div class="row">
-                
+
                 <div class="col-12">
                   <label class="custom-label" style="color: white;">
                     <i class="bi bi-envelope"></i> Email
                   </label>
-                  <input
-                     v-model="form.email"
-                     type="text"
-                     placeholder="Enter your Email"
-                     class="form-control mt-1"
-                  >
+                  <input v-model="form.email" type="text" placeholder="Enter your Email" class="form-control mt-1">
                   <p v-if="errors.email" class="text-danger">{{ errors.email }}</p>
                 </div>
 
@@ -26,26 +21,17 @@
                   <label class="custom-label" style="color: white;">
                     <i class="bi bi-person"></i> Name
                   </label>
-                  <input
-                     v-model="form.name"
-                     type="text"
-                     placeholder="Enter your Name"
-                     class="form-control mt-1"
-                  >
+                  <input v-model="form.name" type="text" placeholder="Enter your Name" class="form-control mt-1">
                   <p v-if="errors.name" class="text-danger">{{ errors.name }}</p>
                 </div>
 
-   
+
                 <div class="col-12">
                   <label class="custom-label" style="color: white;">
                     <i class="bi bi-lock"></i> Password
                   </label>
-                  <input
-                     v-model="form.password"
-                     type="password"
-                     placeholder="Enter your Password"
-                     class="form-control mt-1"
-                  >
+                  <input v-model="form.password" type="password" placeholder="Enter your Password"
+                    class="form-control mt-1">
                   <p v-if="errors.password" class="text-danger">{{ errors.password }}</p>
                 </div>
 
@@ -53,12 +39,8 @@
                   <label class="custom-label" style="color: white;">
                     <i class="bi bi-lock-fill"></i> Confirm Password
                   </label>
-                  <input
-                     v-model="form.confirmPassword"
-                     type="password"
-                     placeholder="Enter your Confirm Password"
-                     class="form-control mt-1"
-                  >
+                  <input v-model="form.confirmPassword" type="password" placeholder="Enter your Confirm Password"
+                    class="form-control mt-1">
                   <p v-if="errors.confirmPassword" class="text-danger">{{ errors.confirmPassword }}</p>
                 </div>
 
@@ -91,14 +73,13 @@
 
 <script setup>
 import "@/assets/style.css";
-import 'bootstrap-icons/font/bootstrap-icons.css'
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { useAuthStore } from "@/stores/auth";
-import { isEmail, isPassword } from "@/utils/validators"; 
+import { useAuthStores } from "@/stores/auth";
+import { isEmail, isPassword } from "@/utils/validate";
 
 const router = useRouter();
-const auth = useAuthStore();
+const auth = useAuthStores();
 
 const form = ref({
   email: "",
@@ -144,11 +125,32 @@ async function handleRegister() {
 </script>
 
 <style scoped>
-.text-danger { color: #ff6b6b; font-size: 13px; margin-top: 4px; }
-h1 { font-weight: 600; color: white; }
-button { width: 100%; margin-top: 10px; }
-input { width: 100%; border-radius: 5px; padding: 8px; }
-.col-12 { padding-left: 20px; }
+.text-danger {
+  color: #ff6b6b;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+h1 {
+  font-weight: 600;
+  color: white;
+}
+
+button {
+  width: 100%;
+  margin-top: 10px;
+}
+
+input {
+  width: 100%;
+  border-radius: 5px;
+  padding: 8px;
+}
+
+.col-12 {
+  padding-left: 20px;
+}
+
 form {
   margin-top: 20px;
   border: 2px solid rgb(0, 64, 255);
@@ -157,6 +159,7 @@ form {
   background-color: rgb(92, 92, 92);
   padding: 20px;
 }
+
 .custom-label {
   display: inline-block;
   margin-top: 14px;
@@ -168,5 +171,9 @@ form {
   border-left: 3px solid #63ff85;
   border-radius: 4px;
 }
-.custom-label i { color: #e6e6eb; margin-right: 5px; }
+
+.custom-label i {
+  color: #e6e6eb;
+  margin-right: 5px;
+}
 </style>
