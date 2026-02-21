@@ -1,6 +1,6 @@
-<template>
+<template >
   <div>
-    <main>
+    <main class="bg-main">
       <div class="container">
         <div class="row">
           <div class="col-6">
@@ -46,7 +46,14 @@
 
                 <!-- Submit Button -->
                 <div class="col-12 mt-3">
-                  <button type="submit" class="btn btn-primary">Sign Up</button>
+                  <button  :disabled="isLoading"  type="submit" class="btn btn-primary">  
+                    <div v-if="isLoading" class="spinner-border spinner-border-sm fw-medium"
+                                                role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                            <div v-else>
+                                                Sign up
+                                            </div></button>
                 </div>
 
                 <!-- Login Link -->
@@ -61,7 +68,7 @@
 
           <div class="col-6">
             <div class="img">
-              <!-- Optional image -->
+              <img src="../../assets/image/2.png" alt="">
             </div>
           </div>
 
@@ -77,9 +84,13 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStores } from "@/stores/auth";
 import { isEmail, isPassword } from "@/utils/validate";
+import { notify } from '@/utils/toast';
 
 const router = useRouter();
 const auth = useAuthStores();
+const notifier = notify(router)
+
+const isLoading = ref(false); 
 
 const form = ref({
   email: "",
@@ -90,20 +101,34 @@ const form = ref({
 
 const errors = ref({});
 
-// Validation function using imported validators
 function validateForm() {
   errors.value = {};
 
-  if (!form.value.email) errors.value.email = "Email is required";
-  else errors.value.email = isEmail(form.value.email);
+  // Email
+  if (!form.value.email) {
+    errors.value.email = "Email is required";
+  } else {
+    const emailError = isEmail(form.value.email);
+    if (emailError) errors.value.email = emailError;
+  }
 
-  if (!form.value.name) errors.value.name = "Name is required";
+  // Name
+  if (!form.value.name) {
+    errors.value.name = "Name is required";
+  }
 
-  if (!form.value.password) errors.value.password = "Password is required";
-  else errors.value.password = isPassword(form.value.password);
+  // Password
+  if (!form.value.password) {
+    errors.value.password = "Password is required";
+  } else {
+    const passError = isPassword(form.value.password);
+    if (passError) errors.value.password = passError;
+  }
 
-  if (!form.value.confirmPassword) errors.value.confirmPassword = "Confirm Password is required";
-  else if (form.value.password && form.value.confirmPassword !== form.value.password) {
+  // Confirm Password
+  if (!form.value.confirmPassword) {
+    errors.value.confirmPassword = "Confirm Password is required";
+  } else if (form.value.confirmPassword !== form.value.password) {
     errors.value.confirmPassword = "Passwords do not match";
   }
 
@@ -113,18 +138,40 @@ function validateForm() {
 async function handleRegister() {
   if (!validateForm()) return;
 
+  isLoading.value = true;
+
   try {
-    await auth.register(form.value);
-    alert("Registration successful!");
-    router.push("/login");
-  } catch (error) {
-    console.error("Registration error:", error);
-    alert(error.response?.data?.message || "Something went wrong");
+    await auth.Register(form.value);
+
+    notifier.success("Register successfully", "/login");
+
+    form.value = {
+      email: "",
+      name: "",
+      password: "",
+      confirmPassword: "",
+    };
+
+  } catch (err) {
+    const message =
+      err.response?.data?.message || "Registration failed";
+
+    notifier.error(message);
+  } finally {
+    isLoading.value = false;
   }
 }
 </script>
 
 <style scoped>
+
+img{
+    margin-top: 20px;
+    width: 100%;
+    height: 660px;
+    object-fit: cover;
+    margin-right: -80px;
+}
 .text-danger {
   color: #ff6b6b;
   font-size: 13px;
@@ -144,7 +191,7 @@ button {
 input {
   width: 100%;
   border-radius: 5px;
-  padding: 8px;
+
 }
 
 .col-12 {
