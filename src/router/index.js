@@ -1,3 +1,4 @@
+import ProfileView from "@/views/ProfileView.vue";
 import { createRouter, createWebHistory } from "vue-router";
 // import { useAuthStores } from '@/stores/auth'
 
@@ -17,15 +18,15 @@ const router = createRouter({
     ],
 })
 
-// router.beforeEach((to, from) => {
-//   const auth =useAuthStores();
+router.beforeEach((to, from) => {
+  const auth =useAuthStores();
 
-//   if (!auth.isLoggedIn && to.meta.require) {
-//     return {name: 'login'}
-//   }
+  if (!auth.isLoggedIn && to.meta.require) {
+    return {name: 'login'}
+  }
 
-//   return true;
+  return true;
 
-// })
+})
 
 export default router

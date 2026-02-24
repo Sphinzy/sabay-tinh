@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useAuthStores } from "@/stores/auth";
 import axios from "axios"
 
@@ -18,3 +19,6 @@ api.interceptors.request.use(config => {
 })
 
 export default api;
+=======
+h
+>>>>>>> c35b084f6137604efc52c3ab9307636bfee8c9b3
