@@ -1,84 +1,118 @@
 <template>
-  <div style="height: 130vh;">
-    <main class="bg-main">
-      <div class="container">
-        <div class="row">
-          <div class="col-6">
-            <form @submit.prevent="handleRegister" class="bg-main">
-              <h1 style="padding-top: 40px; padding-left: 10px;">Create an account</h1>
+  <main class="register-page">
+    <div class="container">
+      <div class="row align-items-center min-vh-100">
+        <!-- FORM -->
+        <div class="col-12 col-lg-5 mx-auto">
+          <div class="card register-card shadow-lg border-0">
+            <div class="card-body p-5">
+              <h2 class="text-center text-white fw-bold mb-4">Create Account</h2>
 
-              <div class="row">
-
-                <div class="col-12">
-                  <label class="custom-label" style="color: white;">
+              <form @submit.prevent="handleRegister">
+                <!-- Email -->
+                <div class="mb-3">
+                  <label class="custom-label">
                     <i class="bi bi-envelope"></i> Email
                   </label>
-                  <input  v-model="form.email" type="text" placeholder="Enter your Email" class="form-control mt-1">
-                  <p v-if="errors.email" class="text-danger">{{ errors.email }}</p>
+                  <input
+                    v-model="form.email"
+                    type="text"
+                    class="form-control"
+                    placeholder="Enter your email"
+                  />
+                  <p v-if="errors.email" class="text-danger">
+                    {{ errors.email }}
+                  </p>
                 </div>
 
-                <div class="col-12">
-                  <label class="custom-label" style="color: white;">
-                    <i class="bi bi-person"></i> Name
-                  </label>
-                  <input v-model="form.name" type="text" placeholder="Enter your Name" class="form-control mt-1">
-                  <p v-if="errors.name" class="text-danger">{{ errors.name }}</p>
+                <!-- Name -->
+                <div class="mb-3">
+                  <label class="custom-label"> <i class="bi bi-person"></i> Name </label>
+                  <input
+                    v-model="form.name"
+                    type="text"
+                    class="form-control"
+                    placeholder="Enter your name"
+                  />
+                  <p v-if="errors.name" class="text-danger">
+                    {{ errors.name }}
+                  </p>
                 </div>
 
-
-                <div class="col-12">
-                  <label class="custom-label" style="color: white;">
+                <!-- Password -->
+                <div class="mb-3 position-relative">
+                  <label class="custom-label">
                     <i class="bi bi-lock"></i> Password
                   </label>
-                  <input v-model="form.password" type="password" placeholder="Enter your Password"
-                    class="form-control mt-1">
-                  <p v-if="errors.password" class="text-danger">{{ errors.password }}</p>
+
+                  <input
+                    v-model="form.password"
+                    :type="showPassword ? 'text' : 'password'"
+                    class="form-control"
+                    placeholder="Enter your password"
+                  />
+
+                  <span class="password-eye" @click="togglePassword">
+                    <i :class="showPassword ? 'bi bi-eye' : 'bi bi-eye-slash'"></i>
+                  </span>
+
+                  <p v-if="errors.password" class="text-danger">
+                    {{ errors.password }}
+                  </p>
                 </div>
 
-                <div class="col-12">
-                  <label class="custom-label" style="color: white;">
+                <!-- Confirm Password -->
+                <div class="mb-3 position-relative">
+                  <label class="custom-label">
                     <i class="bi bi-lock-fill"></i> Confirm Password
                   </label>
-                  <input v-model="form.confirmPassword" type="password" placeholder="Enter your Confirm Password"
-                    class="form-control mt-1">
-                    <span class="password-eye" @click="togglePassword" >
-                                                <i :class="showPassword ? 'bi bi-eye text-main' : 'bi bi-eye-slash text-main'"></i>
-                                            </span>
-                  <p v-if="errors.confirmPassword" class="text-danger">{{ errors.confirmPassword }}</p>
+
+                  <input
+                    v-model="form.confirmPassword"
+                    :type="showConfirmPassword ? 'text' : 'password'"
+                    class="form-control"
+                    placeholder="Confirm your password"
+                  />
+
+                  <span class="password-eye" @click="toggleConfirmPassword">
+                    <i :class="showConfirmPassword ? 'bi bi-eye' : 'bi bi-eye-slash'"></i>
+                  </span>
+
+                  <p v-if="errors.confirmPassword" class="text-danger">
+                    {{ errors.confirmPassword }}
+                  </p>
                 </div>
 
-                <!-- Submit Button -->
-                <div class="col-12 mt-3">
-                  <button  :disabled="isLoading"  type="submit" class="btn btn-primary">  
-                    <div v-if="isLoading" class="spinner-border spinner-border-sm fw-medium"
-                                                role="status">
-                                                <span class="visually-hidden">Loading...</span>
-                                            </div>
-                                            <div v-else>
-                                                Sign up
-                                            </div></button>
+                <!-- Button -->
+                <div class="d-grid mt-3">
+                  <button
+                    :disabled="isLoading"
+                    type="submit"
+                    class="btn btn-primary btn-lg register-btn"
+                  >
+                    <span v-if="isLoading" class="spinner-border spinner-border-sm">
+                    </span>
+
+                    <span v-else> Sign Up </span>
+                  </button>
                 </div>
 
-                <!-- Login Link -->
-                <p class="text-center mt-4 mb-0">
+                <p class="text-center text-white mt-4">
                   Already have an account?
-                  <RouterLink to="/login" class="text-decoration-none">Login</RouterLink>
+                  <RouterLink to="/login" class="login-link"> Login </RouterLink>
                 </p>
-
-              </div>
-            </form>
-          </div>
-
-          <div class="col-6">
-            <div class="img">
-              <img src="../../assets/image/2.png" alt="">
+              </form>
             </div>
           </div>
+        </div>
 
+        <!-- IMAGE -->
+        <div class="col-lg-6 d-none d-lg-block">
+          <img src="../../assets/image/2.png" class="register-image" alt="Register" />
         </div>
       </div>
-    </main>
-  </div>
+    </div>
+  </main>
 </template>
 
 <script setup>
@@ -100,6 +134,17 @@ const form = ref({
 
 const errors = ref({});
 
+const showPassword = ref(false);
+const showConfirmPassword = ref(false);
+
+const togglePassword = () => {
+  showPassword.value = !showPassword.value;
+};
+
+const toggleConfirmPassword = () => {
+  showConfirmPassword.value = !showConfirmPassword.value;
+};
+
 function validateForm() {
   errors.value = {};
 
@@ -116,6 +161,7 @@ async function handleRegister() {
   if (!validateForm()) return;
 
   isLoading.value = true;
+
   try {
     await auth.Register({
       email: form.value.email,
@@ -132,90 +178,76 @@ async function handleRegister() {
     isLoading.value = false;
   }
 }
-</script> 
+</script>
 
 <style scoped>
-.password-eye {
-    position: absolute;
-    top: 50%;
-    right: 15px;
-    transform: translateY(-50%);
-    cursor: pointer;
-    color: #6c757d;
-    z-index: 5;
+.register-page {
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
 }
 
-.password-eye:hover {
-    color: #000;
+.register-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
 }
 
-img{
-    margin-top: 20px;
-    width: 100%;
-    height: 660px;
-    object-fit: cover;
-    margin-right: -80px;
+.custom-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: white;
 }
+
+.form-control {
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  transition: 0.3s;
+}
+
+.form-control:focus {
+  border-color: #4facfe;
+  box-shadow: 0 0 10px rgba(79, 172, 254, 0.4);
+}
+
 .text-danger {
   color: #ff6b6b;
   font-size: 13px;
   margin-top: 4px;
 }
 
-h1 {
+.password-eye {
+  position: absolute;
+  right: 15px;
+  top: 40px;
+  cursor: pointer;
+  color: #555;
+  z-index: 10;
+}
+
+.register-btn {
+  border-radius: 12px;
   font-weight: 600;
-  color: white;
+  transition: 0.3s;
 }
 
-button {
-  width: 100%;
-  margin-top: 10px;
+.register-btn:hover {
+  transform: translateY(-2px);
 }
 
-input {
-  width: 100%;
-  border-radius: 5px;
-
-}
-
-.col-12 {
-  padding-left: 20px;
-}
-
-form {
-  margin-top: 20px;
-  border: 2px solid rgb(0, 64, 255);
-  width: 100%;
-  max-width: 500px;
-  background-color: rgb(92, 92, 92);
-  padding: 20px;
-}
-
-.custom-label {
-  display: inline-block;
-  margin-top: 14px;
-  margin-bottom: 4px;
-  font-size: 14px;
+.login-link {
+  color: #4facfe;
   font-weight: 600;
-  letter-spacing: 0.03em;
-  padding: 4px 10px;
-  border-left: 3px solid #63ff85;
-  border-radius: 4px;
+  text-decoration: none;
 }
 
-.custom-label i {
-  color: #e6e6eb;
-  margin-right: 5px;
-}
-input:hover {
-  border-color: #100351d9;
-  box-shadow: 0 4px 12px rgba(42, 116, 245, 0.3);
-}
-input {
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  transition: all 0.3s ease;   /* important for smooth effect */
+.login-link:hover {
+  text-decoration: underline;
 }
 
+.register-image {
+  width: 100%;
+  border-radius: 20px;
+}
 </style>
