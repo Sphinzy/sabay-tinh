@@ -1,5 +1,5 @@
 <template>
-   <main class="bg-main" style="height: 100vh;">
+   <main class="bg-main" style="height: 120vh;">
       <div class="container">
         <section class="vh-100 d-flex align-items-center justify-content-center  ">
             <div class="container">
@@ -199,7 +199,7 @@ form {
 }
 .bg{
 background: linear-gradient(0deg,rgba(54, 141, 143, 1) 23%, rgba(91, 89, 189, 1) 100%, rgba(247, 180, 35, 1) 54%);
-height: 125vh;
+/* height: 125vh; */
 }
 input:hover {
   border-color: #2a74f5;
