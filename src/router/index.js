@@ -13,9 +13,16 @@ const router = createRouter({
         { path: '/seller', name: 'seller', component: () => import('@/views/Product/SellProduct.vue') },
         { path: '/product', name: 'product', component: () => import('@/views/Profile/GetProduct.vue') },
         { path: '/cart', name: 'cart', component: () => import('@/views/Cart/CartView.vue') },
+        { path: '/addtocart', name: 'addtocart', component: () => import('@/views/Cart/Add2Cart.vue') },
+      { path: '/purchase', name: 'purchase', component: () => import('@/views/Cart/purchasedProduct.vue') },
+      { path: '/cartcheck', name: 'cartcheck', component: () => import('@/views/Cart/CartCheck.vue') },
+      { path: '/checkout', name: 'checkout', component: () => import('@/views/Cart/Checkout.vue') },
+      { path: '/location', name: 'location', component: () => import('@/views/Location/GetMap.vue') },
+      { path: '/table', name: 'table', component: () => import('@/components/ui/BaseTable.vue') },
         { path: '/sell', name: 'sell', component: () => import('@/views/Product/SellProduct.vue') },
-      { path: '/search', name: 'search', component: () => import('@/views/Search/SearchView.vue') },
-      { path: '/addproduct', name: 'addproduct', component: () => import('@/views/Shopping/Addproduct.vue') },
+        { path: '/search', name: 'search', component: () => import('@/views/Search/SearchView.vue') },
+        { path: '/addproduct', name: 'addproduct', component: () => import('@/views/Shopping/Addproduct.vue') },
+        { path: "/product-detail/:id",name: "productDetail", component: () => import("@/views/Shopping/ProductDetailView.vue"),},
     ],
 })
 

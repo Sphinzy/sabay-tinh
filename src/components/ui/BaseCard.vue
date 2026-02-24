@@ -9,7 +9,7 @@
           v-if="item.categories && item.categories.length > 0"
         >
           <i class="bi bi-tag-fill me-1"></i>
-          {{ item.categories[0].name }}
+          {{ item.categories[0]?.name || 'N/A' }}
         </div>
       </div>
 
@@ -38,7 +38,11 @@
             <div class="creator-info">
               <span class="creator-name">{{ item.creator.name }}</span>
               <span class="date">{{
-                new Date(item.created_at).toLocaleDateString()
+                new Date(item.created_at).toLocaleString('en-GB', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric'
+                            })
               }}</span>
             </div>
           </div>

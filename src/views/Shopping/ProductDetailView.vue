@@ -1,5 +1,5 @@
 <template>
-  <NavBar />
+  <NavBar :cartCount="cartStore.carts?.items?.length || 0"></NavBar>
 
   <div class="container py-5">
     <button
@@ -88,7 +88,7 @@
           </div>
           <!-- BUTTONS -->
           <div class="text-start my-5">
-            <button class="btn btn-cart btn-lg rounded-pill me-2 text-center">
+            <button class="btn btn-cart btn-lg rounded-pill me-2 text-center" @click="handleAddToCart(route.params.id)">
               <i class="bi bi-cart-plus "></i>
             </button>
             <button class="btn btn-buy btn-lg rounded-pill">Buy Now</button>
@@ -98,6 +98,49 @@
     </div>
   </div>
 </template>
+<script setup>
+import { ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import api from "@/api/http";
+import { notify } from "@/utils/toast";
+import NavBar from "@/components/layout/NavBar.vue";
+import { useCartStore } from "@/stores/fetchCart";
+
+const cartStore = useCartStore();
+const route = useRoute();
+const router = useRouter();
+const product = ref(null);
+const loading = ref(true);
+const qty = ref(1)
+
+
+const toast = notify();
+const fetchProductDetail = async () => {
+  try {
+    const res = await api.get(`api/products/${route.params.id}`, {
+      headers: {
+        Accept: "application/json",
+      },
+    });
+    product.value = res.data.data;
+  } catch (error) {
+    toast.error("Cannot load product details");
+  } finally {
+    loading.value = false;
+  }
+};
+const handleAddToCart = async (id) => {
+  const formData = new FormData()
+  formData.append('product_id', id)
+  formData.append('qty', qty.value)
+  
+  await api.post(`/api/carts`, formData)
+  console.log(id);
+  cartStore.fetchCart()
+};
+
+onMounted(fetchProductDetail);
+</script>
 <style scoped>
 .text-main {
   color: var(--bs-main);
@@ -205,32 +248,4 @@
   color: #111827;
 }
 </style>
-<script setup>
-import { ref, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import api from "@/api/http";
-import { notify } from "@/utils/toast";
-import NavBar from "@/components/layout/NavBar.vue";
-const route = useRoute();
-const router = useRouter();
-const product = ref(null);
-const loading = ref(true);
 
-const toast = notify();
-const fetchProductDetail = async () => {
-  try {
-    const res = await api.get(`api/products/${route.params.id}`, {
-      headers: {
-        Accept: "application/json",
-      },
-    });
-    product.value = res.data.data;
-  } catch (error) {
-    toast.error("Cannot load product details");
-  } finally {
-    loading.value = false;
-  }
-};
-
-onMounted(fetchProductDetail);
-</script>

@@ -15,7 +15,7 @@
                                         <th>Product Name</th>
                                         <th>Customer Name</th>
                                         <th>Price</th>
-                                        <th>Phone</th>
+                                        <th>Email</th>
                                         <th>QTY</th>
                                         <th>Transaction</th>
                                         <th>Status</th>
@@ -55,7 +55,7 @@
                                         <td>{{ textCut(order.product.title) }}</td>
                                         <td>{{ textCut(order.buyer.name) }}</td>
                                         <td>${{ order.price }}</td>
-                                        <td>{{ order.buyer?.phone || 'N/A' }}</td>
+                                        <td>{{ order.buyer?.email || 'N/A' }}</td>
                                         <td>{{ order.qty }}</td>
 
                                         <!-- Status Badge -->
@@ -84,7 +84,7 @@
                                                                 <div class="col-12">
                                                                     <h4>Recive</h4>
                                                                     <div class="card border-0 ">
-                                                                        <img src="https://i.pinimg.com/736x/5f/ba/bd/5fbabd59b375343b60c11bf4277e2061.jpg"
+                                                                        <img :src="order?.transaction_file || 'https://ualbiotech.com//wp-content/uploads/2023/03/C101307_Image_01.jpg'"
                                                                             class="object-fit-contain" height="400"
                                                                             alt="">
                                                                     </div>

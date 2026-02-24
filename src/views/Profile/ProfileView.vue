@@ -63,48 +63,24 @@
 
               <!-- Own products -->
               <li class="nav-item" role="presentation">
-                <button
-                  class="nav-link active"
-                  id="posts-tab"
-                  data-bs-toggle="pill"
-                  data-bs-target="#posts"
-                  type="button"
-                  role="tab"
-                  aria-controls="posts"
-                  aria-selected="true"
-                >
+                <button class="nav-link active" id="posts-tab" data-bs-toggle="pill" data-bs-target="#posts"
+                  type="button" role="tab" aria-controls="posts" aria-selected="true">
                   Own Products
                 </button>
               </li>
 
               <!-- Payment -->
               <li class="nav-item" role="presentation">
-                <button
-                  class="nav-link"
-                  id="payment-tab"
-                  data-bs-toggle="pill"
-                  data-bs-target="#payment"
-                  type="button"
-                  role="tab"
-                  aria-controls="payment"
-                  aria-selected="false"
-                >
+                <button class="nav-link" id="payment-tab" data-bs-toggle="pill" data-bs-target="#payment" type="button"
+                  role="tab" aria-controls="payment" aria-selected="false">
                   Payment Check
                 </button>
               </li>
 
               <!-- History -->
               <li class="nav-item" role="presentation">
-                <button
-                  class="nav-link"
-                  id="history-tab"
-                  data-bs-toggle="pill"
-                  data-bs-target="#history"
-                  type="button"
-                  role="tab"
-                  aria-controls="history"
-                  aria-selected="false"
-                >
+                <button class="nav-link" id="history-tab" data-bs-toggle="pill" data-bs-target="#history" type="button"
+                  role="tab" aria-controls="history" aria-selected="false">
                   History Order
                 </button>
               </li>
@@ -121,11 +97,8 @@
                   <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="fw-bold m-0">Own Created Products</h5>
 
-                    <button
-                      class="btn btn-outline-primary btn-sm"
-                      @click="fetchMyProducts(1, 20)"
-                      :disabled="loadingProducts"
-                    >
+                    <button class="btn btn-outline-primary btn-sm" @click="fetchMyProducts(1, 20)"
+                      :disabled="loadingProducts">
                       {{ loadingProducts ? "Loading..." : "Refresh" }}
                     </button>
                   </div>
@@ -144,31 +117,13 @@
                   </div>
 
                   <div v-else class="row g-4">
-                    <div
-                      class="col-12 col-md-6 col-lg-4 col-xl-3"
-                      v-for="(item, idx) in myProducts"
-                      :key="item.id ?? idx"
-                    >
-                      <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
-
-                        <img
-                          :src="getProductImage(item)"
-                          class="w-100 post-img"
-                          alt="thumb"
-                        />
-
-                        <div class="card-body">
-                          <h6 class="fw-bold mb-1">
-                            {{ getProductTitle(item) }}
-                          </h6>
-
-                          <div class="text-muted small">
-                            ${{ getProductPrice(item) }}
-                          </div>
-                        </div>
-
-                      </div>
+                    <div class="col-sm-6 col-md-4 col-xl-3" v-for="own in myProducts" :key="own.id">
+                    <router-link class="text-decoration-none" :to="'/product-detail/' + own.id">
+                      <BaseCard :item="own">
+                        </BaseCard>
+                    </router-link>
                     </div>
+
                   </div>
 
                 </div>
@@ -189,11 +144,8 @@
                     <span class="fs-4">🧾</span>
                     <h4 class="m-0 fw-bold">Order History</h4>
 
-                    <button
-                      class="btn btn-outline-primary btn-sm ms-auto"
-                      @click="fetchMyPurchased()"
-                      :disabled="loadingPurchased"
-                    >
+                    <button class="btn btn-outline-primary btn-sm ms-auto" @click="fetchMyPurchased()"
+                      :disabled="loadingPurchased">
                       {{ loadingPurchased ? "Loading..." : "Refresh" }}
                     </button>
                   </div>
@@ -211,38 +163,50 @@
                   </div>
 
                   <div v-else class="d-flex flex-column gap-3">
-                    <div class="border rounded-4 p-4 bg-white" v-for="(ord, idx) in myPurchased" :key="ord.id ?? idx">
+                    <div class="row">
+                        <div class="col-lg-12">
 
-                      <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                          <div class="fw-bold fs-5">
-                            {{ ord.code || ord.order_no || ord.id || ("ORD-" + (idx + 1)) }}
-                          </div>
-                          <div class="text-muted small">
-                            {{ ord.date || ord.created_at || "" }}
-                          </div>
+                            <table class="table table-striped text-center">
+                                <thead>
+                                    <tr>
+                                        <th>Product Name</th>
+                                        <th>Seller Name</th>
+                                        <th>Price</th>
+                                        <th>Email</th>
+                                        <th>QTY</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr v-for="order in myPurchased" :key="order.id">
+                                        <td>{{ textCut(order.product.title) }}</td>
+                                        <td>{{ textCut(order.seller.name) }}</td>
+                                        <td>${{ order.price }}</td>
+                                        <td>{{ order.buyer?.email || 'N/A' }}</td>
+                                        <td>{{ order.qty }}</td>
+                                        <td>
+                                            <span class="badge" :class="{
+                                                'badge-warning': order.status === 1,
+                                                'badge-success': order.status === 2,
+                                                'badge-danger': order.status === 3
+                                            }">
+                                                {{
+                                                    order.status === 1
+                                                        ? 'Pending'
+                                                        : order.status === 2
+                                                            ? 'Approved'
+                                                            : 'Rejected'
+                                                }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <!-- <tr v-if="orders.length === 0">
+                                        <td colspan="7" class="text-center">No orders found.</td>
+                                    </tr> -->
+                                </tbody>
+                            </table>
                         </div>
-
-                        <div class="text-end">
-                          <div class="fw-bold fs-4">
-                            ${{ ord.total_price ?? ord.total ?? ord.amount ?? "0.00" }}
-                          </div>
-
-                          <span class="badge px-3 py-2 rounded-pill" :class="badgeClass(ord.status)">
-                            {{ ord.status || "In Transit" }}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div class="text-muted mt-3">
-                        <div v-for="(p, pidx) in (ord.items || ord.products || [])" :key="pidx">
-                          {{ (p.name || p.title || "Item") }} × {{ p.qty || p.quantity || 1 }}
-                        </div>
-                        <div v-if="!(ord.items || ord.products)">
-                          (No items list from API)
-                        </div>
-                      </div>
-
                     </div>
                   </div>
 
@@ -264,7 +228,10 @@ import { onMounted, ref } from "vue"
 import api from "@/api/http"
 import NavBar from "@/components/layout/NavBar.vue"
 import SellProduct from "../Product/SellProduct.vue"
-
+import BaseCard from "@/components/ui/BaseCard.vue"
+import BaseTable from "@/components/ui/BaseTable.vue"
+// import { useOwnProducts } from "@/stores/ownProduct"
+// const ownProduct = useOwnProducts();
 /* UI demo */
 const coverUrl =
   "https://images.unsplash.com/photo-1458668383970-8ddd3927deed?q=80&w=1600&auto=format&fit=crop"
@@ -379,6 +346,11 @@ const badgeClass = (status) => {
     return "bg-danger-subtle text-danger border border-danger-subtle"
   return "bg-primary-subtle text-primary border border-primary-subtle"
 }
+function textCut(text, limit = 20) {
+    if (!text) return '';
+    return text.length > limit ? text.slice(0, limit) + '...' : text;
+}
+
 
 /* load */
 onMounted(() => {
@@ -406,7 +378,7 @@ onMounted(() => {
   background: #fff;
   padding: 6px;
   margin-top: -55px;
-  box-shadow: 0 10px 22px rgba(0,0,0,0.15);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.15);
   z-index: 10;
 }
 

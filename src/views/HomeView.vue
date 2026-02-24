@@ -113,12 +113,12 @@
         :key="product.id"
       >
         <RouterLink
-          :to="'/product-detail/' + product.id"
+          :to="`/product-detail/${product.id}`"
           class="text-decoration-none"
         >
           <BaseCard :item="product">
             <template #action="{ product }">
-              <button class="btn-add-plus" @click="btnAddToCart(prodcut.id)">
+              <button class="btn-add-plus">
                 <i class="bi bi-cart-plus-fill"></i>
               </button>
             </template>
@@ -144,28 +144,12 @@ import BaseCard from "@/components/ui/BaseCard.vue";
 import { onMounted } from "vue";
 import { useProductStore } from "@/stores/productStore";
 import Navbar from "@/components/layout/NavBar.vue";
-import { useCartStore } from "@/stores/fetchCart";
 
-const cart = useCartStore();
-const carts = ref(null)
-const qty = ref(1)
 const productStore = useProductStore();
-
-const btnAddToCart = async (id) => {
-    // const formData = new FormData()
-    // formData.append('product_id', id)
-    // formData.append('qty', qty.value)
-
-    // await api.post(`/api/carts`, formData)
-
-    // cart.fetchCart()
-    alert()
-}
 
 
 onMounted(async () => {
   await productStore.fetchProducts();
-  carts.fetchCart();
 });
 </script>
 

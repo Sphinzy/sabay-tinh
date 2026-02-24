@@ -13,7 +13,9 @@
           </button>
 
           <!-- Brand -->
-          <router-link to="/" class="text-main fs-4 text-decoration-none fw-medium">SabayJay</router-link>
+          <router-link to="/" class="text-main fs-4 text-decoration-none fw-medium">
+            <img src="../../assets/image/logo.png" width="150" alt="">
+          </router-link>
           <!-- Desktop menu -->
                   <ul class="navbar-nav d-none d-lg-flex flex-row ms-5">
           <li class="nav-item">
@@ -35,7 +37,7 @@
         <!-- after login  -->
         <div v-if="isLoggedIn" class="d-flex align-items-center">
           <router-link to="/search"><i class="bi bi-search fs-5 text-main me-3"></i></router-link>
-          <router-link to="/cart" class="cart-link position-relative d-inline-block">
+          <router-link to="/cartcheck" class="cart-link position-relative d-inline-block">
             <i class="bi bi-cart3 fs-4 text-main"></i>
 
             <!-- Badge -->
