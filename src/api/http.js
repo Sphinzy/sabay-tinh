@@ -1,5 +1,5 @@
 import axios from "axios"
-
+import { useAuthStores } from "@/stores/auth";
 const api = axios.create({
     baseURL: 'https://ecommerce201.csm.linkpc.net'
 })

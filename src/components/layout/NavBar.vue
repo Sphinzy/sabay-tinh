@@ -26,7 +26,7 @@
                 class="bi bi-shop"></i>Shop</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link text-main" active-class="active" to="/sell"><i
+            <router-link class="nav-link text-main" active-class="active" to="/addproduct"><i
                 class="bi bi-box-seam"></i>Sell</router-link>
           </li>
         </ul>
@@ -114,7 +114,7 @@
 import "@/assets/style.css";
 import { ref } from "vue";
 let cartCount = ref(1);
-let isLoggedIn = ref(false)
+let isLoggedIn = ref(true)
 
 
 </script>
