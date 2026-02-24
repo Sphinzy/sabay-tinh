@@ -5,95 +5,91 @@
         <div class="d-flex">
           <!-- Mobile menu button -->
           <button class="btn border-0 d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu">
-            <i class="bi bi-list fs-3 text-sub-main"></i>
+            <i class="bi bi-list fs-3 text-main"></i>
           </button>
 
           <!-- Brand -->
-          <router-link to="/" class="text-main fs-4 text-decoration-none fw-medium">SabayJay</router-link>
+          <router-link to="/" class="text-main fs-4 text-decoration-none fw-medium">SabayTinh</router-link>
           <!-- Desktop menu -->
-          <ul class="navbar-nav d-none d-lg-flex flex-row ms-5">
-            <li class="nav-item">
-              <router-link class="nav-link text-sub-main"><i class="bi bi-house"></i>Home</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link class="nav-link text-sub-main"><i class="bi bi-shop"></i>Shop</router-link>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle text-sub-main" href="#" role="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                <i class="bi bi-x-diamond"></i> Categories
-              </a>
-
-              <ul class="dropdown-menu border-0 shadow">
-                <li>
-                  <router-link class="dropdown-item text-sub-main" to="/category/men">
-                    Men
-                  </router-link>
-                </li>
-                <li>
-                  <router-link class="dropdown-item text-sub-main" to="/category/women">
-                    Women
-                  </router-link>
-                </li>
-                <li>
-                  <router-link class="dropdown-item text-sub-main" to="/category/shoes">
-                    Shoes
-                  </router-link>
-                </li>
-                <li>
-                  <router-link class="dropdown-item text-sub-main" to="/category/accessories">
-                    Accessories
-                  </router-link>
-                </li>
-              </ul>
-            </li>
-
-            <li class="nav-item">
-              <arouter-link class="nav-link text-sub-main"><i class="bi bi-cart3"></i>Cart</arouter-link>
-            </li>
-          </ul>
         </div>
+        <ul class="navbar-nav d-none d-lg-flex flex-row ms-5">
+          <li class="nav-item">
+            <router-link class="nav-link text-main" to="/" active-class="active"><i
+                class="bi bi-house"></i>Home</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link text-main" active-class="active" to="/shop"><i
+                class="bi bi-shop"></i>Shop</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link text-main" active-class="active" to="/sell"><i
+                class="bi bi-box-seam"></i>Sell</router-link>
+          </li>
+        </ul>
 
-        <!-- Theme toggle -->
-        <button class="btn border-0 themeToggle">
-          <i class="bi bi-brightness-high"></i>
-        </button>
+        <!-- after login  -->
+        <div v-if="isLoggedIn" class="d-flex align-items-center">
+          <router-link to="/search"><i class="bi bi-search fs-5 text-main me-3"></i></router-link>
+          <router-link to="/cart" class="cart-link position-relative d-inline-block">
+            <i class="bi bi-cart3 fs-4 text-main"></i>
+
+            <!-- Badge -->
+            <span v-if="cartCount > 0" class="cart-badge">
+              {{ cartCount > 9 ? '9+' : cartCount }}
+            </span>
+          </router-link>
+
+          <div class="ms-3">
+            <router-link to="/profile">
+              <img id="logoImage" class="rounded-circle"
+                src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
+                alt="">
+            </router-link>
+          </div>
+        </div>
+        <!-- before login  -->
+        <div v-else class="d-flex align-items-center">
+          <router-link to="/search"><i class="bi bi-search fs-5 text-main me-4"></i></router-link>
+
+          <div class="d-flex align-items-center gap-1">
+            <router-link to="/login" class="d-flex align-items-center gap-1 text-main text-decoration-none auth-link">
+              <i class="bi bi-person fs-5"></i>
+              <span>Login</span>
+            </router-link>
+
+            <span class="text-main">/</span>
+
+            <router-link to="/register" class="text-main text-decoration-none auth-link">
+              Register
+            </router-link>
+          </div>
+
+        </div>
       </div>
       <hr class="bg-white w-100" />
     </nav>
   </header>
 
   <!-- ================= OFFCANVAS (LEFT) ================= -->
-  <div class="offcanvas offcanvas-start bg-card text-sub-main" tabindex="-1" id="offcanvasMenu">
+  <div class="offcanvas offcanvas-start bg-card text-main" tabindex="-1" id="offcanvasMenu">
     <div class="offcanvas-header">
-      <h5>Satsya</h5>
+      <router-link to="/" class="text-main fs-4 text-decoration-none fw-medium">SabayTinh</router-link>
       <button class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
     </div>
 
     <div class="offcanvas-body">
       <ul class="navbar-nav gap-3">
         <li class="nav-item">
-          <router-link class="nav-link text-sub-main"><i class="bi bi-house"></i>Home</router-link>
+          <router-link class="nav-link text-main" to="/" active-class="active"><i
+              class="bi bi-house"></i>Home</router-link>
         </li>
         <li class="nav-item">
-          <router-link class="nav-link text-sub-main"><i class="bi bi-shop"></i>Shop</router-link>
+          <router-link class="nav-link text-main" active-class="active" to="/shop"><i
+              class="bi bi-shop"></i>Shop</router-link>
         </li>
-        <li>
-          <span class="nav-link text-sub-main fw-bold">Categories</span>
-        </li>
-        <li>
-          <router-link class="nav-link text-sub-main ps-4" to="/category/men">Men</router-link>
-        </li>
-        <li>
-          <router-link class="nav-link text-sub-main ps-4" to="/category/women">Women</router-link>
-        </li>
-        <li>
-          <router-link class="nav-link text-sub-main ps-4" to="/category/shoes">Shoes</router-link>
-        </li>
-
-
         <li class="nav-item">
-          <arouter-link class="nav-link text-sub-main"><i class="bi bi-cart3"></i>Cart</arouter-link>
+          <router-link class="nav-link text-main" active-class="active" to="/sell"><i
+              class="bi bi-box-seam"></i>Sell</router-link>
         </li>
       </ul>
     </div>
@@ -102,6 +98,48 @@
 
 <script setup>
 import "@/assets/style.css";
+import { ref } from "vue"
+
+const { cartCount } = defineProps({
+  cartCount: {
+    type: Number,
+    default: 0
+  }
+})
+
+const isLoggedIn = ref(true)
 </script>
 
-<style scoped></style>
+<style scoped>
+.cart-link {
+  position: relative;
+}
+
+.cart-badge {
+  position: absolute;
+  top: 1px;
+  right: -10px;
+
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 11px;
+
+  background-color: #dc3545;
+  color: white;
+
+  border-radius: 50px;
+  border: 2px solid white;
+
+  transition: transform 0.2s ease;
+}
+
+.cart-link:hover .cart-badge {
+  transform: scale(1.1);
+}
+</style>

@@ -5,34 +5,23 @@ import HomeView from "@/views/HomeView.vue";
 import Add2Cart from "@/views/Add2Cart.vue";
 import PurchasedProduct from "@/views/purchasedProduct.vue";
 
-const routes = [
-    {
-        path: '/',
-        name: 'home',
-        component: HomeView
-    },
-    {
-        path: '/cart',
-        name: 'cart',
-        component: CartView
-    },
-    {
-        path: '/add2cart',
-        name: 'add2cart',
-        component: Add2Cart
-    },
-    {
-        path: '/purchasedProduct',
-        name: 'purchasedProduct',
-        component: PurchasedProduct
-    },
-]
-
-
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
-    routes
-});
+    routes: [
+        { path: '/', name: 'home', component: () => import('@/views/HomeView.vue'), meta: { require: true } },
+        { path: '/login', name: 'login', component: () => import('@/views/Auth/LoginView.vue') },
+        { path: '/register', name: 'register', component: () => import('@/views/Auth/RegisterView.vue') },
+        { path: '/shop', name: 'shop', component: () => import('@/views/Shopping/ShopView.vue') },
+        { path: '/profile', name: 'profile', component: () => import('@/views/Profile/ProfileView.vue') },
+        { path: '/seller', name: 'seller', component: () => import('@/views/Product/SellProduct.vue') },
+        { path: '/product', name: 'product', component: () => import('@/views/Profile/GetProduct.vue') },
+        { path: '/cart', name: 'cart', component: () => import('@/views/CartView.vue') },
+        { path: '/add2cart', name: 'add2cart', component: () => import('@/views/Add2Cart.vue') },
+        { path: '/purchasedProduct', name: 'purchasedProduct', component: () => import('@/views/purchasedProduct.vue') },
+        { path: '/sell', name: 'sell', component: () => import('@/views/Product/SellProduct.vue') },
+        { path: '/search', name: 'search', component: () => import('@/views/Search/SearchView.vue') },
+    ],
+})
 
 // router.beforeEach((to, from) => {
 //   const auth =useAuthStores();

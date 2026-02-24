@@ -25,40 +25,53 @@ body {
 }
 
 .bg-main {
-    background-color: #9f28e3 !important;
+    background-color: #093c87 !important;
 }
 
 #logoImage {
-    width: 50px;
+    width: 30px;
 }
 
 :root {
-    --bs-main: #9f28e3 !important;
-    --bs-main-rgb: 118, 69, 191 !important;
-    --bs-main-hover: #8b5ad6 !important;
-    --bs-main-active: #6a3bb0 !important;
+    /* ===== MAIN COLOR ===== */
+    --bs-main: #093c87;
+    --bs-main-rgb: 9, 60, 135;
+    --bs-main-hover: #0b4ea8;
+    /* lighter */
+    --bs-main-active: #062b63;
+    /* darker */
 
-    --bs-sub-main: #d2bfe2 !important;
-    --bs-sub-main-rgb: 210, 191, 226 !important;
-    --bs-sub-main-hover: #c3a8dc !important;
-    --bs-sub-main-active: #b494d3 !important;
+    /* ===== SUB MAIN COLOR ===== */
+    --bs-sub-main: #2218c5;
+    --bs-sub-main-rgb: 34, 24, 197;
+    --bs-sub-main-hover: #3a30e0;
+    /* lighter */
+    --bs-sub-main-active: #1a1299;
+    /* darker */
 
-    --bs-color-dark: #040316 !important;
-    --bs-color-light: #ffffff !important;
+    /* ===== BASE COLORS ===== */
+    --bs-color-dark: #040316;
+    --bs-color-light: #ffffff;
 
-    --transition-fast: 0.2s ease-in-out !important;
-    --border-radius-main: 0.5rem !important;
+    /* ===== UI SETTINGS ===== */
+    --transition-fast: 0.2s ease-in-out;
+    --border-radius-main: 0.5rem;
 
-    --bs-cus-success: #bbf0bb !important;
-    --bs-bor-success: #05a300 !important;
-    --bs-cus-danger: #f5d0d0 !important;
-    --bs-bor-danger: #e41414 !important;
+    /* ===== STATUS COLORS ===== */
+    --bs-cus-success: #dcfce7;
+    --bs-bor-success: #16a34a;
+    --bs-cus-danger: #fee2e2;
+    --bs-bor-danger: #dc2626;
+    --bs-cus-warning: #fef9c3;
+    --bs-bor-warning: #ca8a04;
 }
 
 /* =========================
         BUTTONS
    ========================= */
-
+.text-main{
+    color: var(--bs-main) !important;
+}
 .btn-main {
     background-color: var(--bs-main) !important;
     border-color: var(--bs-main) !important;
@@ -219,7 +232,8 @@ body {
 
 /* Input Fields Styling */
 input.form-control {
-    border: 2px solid var(--bs-sub-main);
+    height: 40px;
+    /* border: 2px solid var(--bs-sub-main); */
     border-radius: var(--border-radius-main);
     /* padding: 12px 15px; */
     font-size: 16px;
@@ -418,7 +432,21 @@ select.form-select.error {
     border-radius: 5px !important;
     color: #a12a2a !important;
 }
-
+.badge-success{
+    background-color: var(--bs-cus-success) !important;
+    color: var(--bs-bor-success) !important;
+    padding: 7px 10px !important;
+}
+.badge-danger {
+    background-color: var(--bs-cus-danger) !important;
+    color: var(--bs-bor-danger) !important;
+    padding: 7px 10px !important;
+}
+.badge-warning {
+    background-color: var(--bs-cus-warning) !important;
+    color: var(--bs-bor-warning) !important;
+    padding: 7px 10px !important;
+}
 /* toast  */
 #toastMsg {
     width: auto;
