@@ -1,5 +1,6 @@
 <template>
-  <div class="container-fluid px-0">
+  <NavBar></NavBar>
+  <div class="container px-0">
     <div class="row g-0">
       <div class="col-12">
 
@@ -262,6 +263,7 @@
 <script setup>
 import { onMounted, ref } from "vue"
 import api from "@/api/http"
+import NavBar from "@/components/layout/NavBar.vue"
 
 /* UI demo */
 const coverUrl =
