@@ -1,10 +1,10 @@
 <template>
     <div>
-        <NavBar>
+        <NavBar></NavBar>
             <main>
                 <router-view></router-view>
             </main>
-        </NavBar>
+        
     </div>
 </template>
 
