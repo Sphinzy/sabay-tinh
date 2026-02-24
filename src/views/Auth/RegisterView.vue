@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 130vh;">
+  <div style="height: 1vhm;">
     <main class="bg-main">
       <div class="container">
         <div class="row">
