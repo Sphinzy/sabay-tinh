@@ -1,5 +1,5 @@
 import { useAuthStores } from "@/stores/auth";
-import axios from "axios"
+import axios from "axios";
 
 const api = axios.create({
     baseURL: 'https://ecommerce201.csm.linkpc.net',
@@ -8,13 +8,13 @@ const api = axios.create({
     }
 })
 
-api.interceptors.request.use(config => {
-    const auth = useAuthStores();
-    if (auth.token) {
-        config.headers.Authorization = `Bearer ${auth.token}`
-    }
+api.interceptors.request.use((config) => {
+  const auth = useAuthStores();
+  if (auth.token) {
+    config.headers.Authorization = `Bearer ${auth.token}`;
+  }
 
-    return config;
-})
+  return config;
+});
 
 export default api;
