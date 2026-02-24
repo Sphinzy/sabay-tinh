@@ -1,6 +1,6 @@
 <template>
     <div>
-        <NavBar></NavBar>
+        <!-- <NavBar></NavBar> -->
         <main>
             <section>
                 <div class="container">

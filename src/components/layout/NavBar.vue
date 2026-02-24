@@ -4,15 +4,18 @@
       <div class="container">
         <div class="d-flex">
           <!-- Mobile menu button -->
-          <button class="btn border-0 d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu">
+          <button
+            class="btn border-0 d-lg-none"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasMenu"
+          >
             <i class="bi bi-list fs-3 text-main"></i>
           </button>
 
           <!-- Brand -->
-          <router-link to="/" class="text-main fs-4 text-decoration-none fw-medium">SabayTinh</router-link>
+          <router-link to="/" class="text-main fs-4 text-decoration-none fw-medium">SabayJay</router-link>
           <!-- Desktop menu -->
-        </div>
-        <ul class="navbar-nav d-none d-lg-flex flex-row ms-5">
+                  <ul class="navbar-nav d-none d-lg-flex flex-row ms-5">
           <li class="nav-item">
             <router-link class="nav-link text-main" to="/" active-class="active"><i
                 class="bi bi-house"></i>Home</router-link>
@@ -22,10 +25,12 @@
                 class="bi bi-shop"></i>Shop</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link text-main" active-class="active" to="/sell"><i
+            <router-link class="nav-link text-main" active-class="active" to="/addproduct"><i
                 class="bi bi-box-seam"></i>Sell</router-link>
           </li>
         </ul>
+        </div>
+
 
         <!-- after login  -->
         <div v-if="isLoggedIn" class="d-flex align-items-center">
@@ -41,9 +46,7 @@
 
           <div class="ms-3">
             <router-link to="/profile">
-              <img id="logoImage" class="rounded-circle"
-                src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
-                alt="">
+            <img id="logoImage" class="rounded-circle" src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg" alt="">
             </router-link>
           </div>
         </div>
@@ -71,9 +74,9 @@
   </header>
 
   <!-- ================= OFFCANVAS (LEFT) ================= -->
-  <div class="offcanvas offcanvas-start bg-card text-main" tabindex="-1" id="offcanvasMenu">
+  <div class="offcanvas offcanvas-start bg-card text-sub-main" tabindex="-1" id="offcanvasMenu">
     <div class="offcanvas-header">
-      <router-link to="/" class="text-main fs-4 text-decoration-none fw-medium">SabayTinh</router-link>
+      <h5>Satsya</h5>
       <button class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
     </div>
 

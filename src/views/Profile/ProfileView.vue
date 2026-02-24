@@ -177,8 +177,7 @@
               <!-- PAYMENT TAB -->
               <div class="tab-pane fade" id="payment" role="tabpanel" aria-labelledby="payment-tab">
                 <div class="p-4">
-                  <h5 class="fw-bold">Payment Check</h5>
-                  <p class="text-muted m-0">(Connect payment API later)</p>
+                  <SellProduct></SellProduct>
                 </div>
               </div>
 
@@ -264,6 +263,7 @@
 import { onMounted, ref } from "vue"
 import api from "@/api/http"
 import NavBar from "@/components/layout/NavBar.vue"
+import SellProduct from "../Product/SellProduct.vue"
 
 /* UI demo */
 const coverUrl =

@@ -1,6 +1,6 @@
 // import ProfileView from "@/views/ProfileView.vue";
 import { createRouter, createWebHistory } from "vue-router";
-import { useAuthStores } from '@/stores/auth'
+import { useAuthStores } from "@/stores/auth";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,6 +50,26 @@ const router = createRouter({
       path: "/categories",
       name: "categories",
       component: () => import("@/views/Categories/CategoryView.vue"),
+      },
+      {
+          path: "/seller",
+          name: "seller",
+          component: () => import("@/views/Product/SellProduct.vue"),
+    },
+    {
+      path: "/product-detail/:id",
+      name: "productDetail",
+      component: () => import("@/views/Shopping/ProductDetailView.vue"),
+    },
+    {
+      path: "/addproduct",
+      name: "addproduct",
+      component: () => import("@/views/Shopping/Addproduct.vue"),
+    },
+    {
+      path: "/cartprocess",
+      name: "cartprocess",
+      component: () => import("@/views/Profile/GetProduct.vue"),
     },
   ],
 });
@@ -65,4 +85,4 @@ const router = createRouter({
 
 // })
 
-export default router
+export default router;
