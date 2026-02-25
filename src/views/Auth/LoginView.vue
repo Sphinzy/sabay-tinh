@@ -1,72 +1,103 @@
 <template>
+  <main class="login-page">
     <div class="container">
-        <section class="vh-100 d-flex align-items-center justify-content-center bg-light">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-12 col-md-8 col-lg-5">
-                        <div class="card shadow-sm border-0">
-                            <div class="card-body p-5">
-                                <h2 class="fw-bold mb-4 text-center">Login</h2>
+      <div class="row align-items-center min-vh-100">
 
-                                <form @submit.prevent="handleLogin">
-                                    <div class="mb-3">
-                                        <label for="emailInput" class="form-label">Email address</label>
-                                        <input v-model="email" type="text" class="form-control" id="emailInput"
-                                            placeholder="name@example.com">
-                                        <p v-if="err.email" class="text-danger pt-2">{{ err.email }}</p>
-                                    </div>
+        <!-- Login Card -->
+        <div class="col-12 col-lg-5 mx-auto">
+          <div class="card login-card shadow-lg border-0">
+            <div class="card-body p-5">
 
-                                    <div class="mb-3">
-                                        <label for="passwordInput" class="form-label">Password</label>
+              <h2 class="text-center text-white fw-bold mb-4">
+                Login
+              </h2>
 
-                                        <div class="input-group position-relative">
-                                            <input v-model="password" :type="passwordType" class="form-control pe-5 rounded"
-                                                id="passwordInput" placeholder="Enter your password" />
+              <form @submit.prevent="handleLogin">
 
-                                            <span class="password-eye" @click="togglePassword">
-                                                <i :class="showPassword ? 'bi bi-eye text-main' : 'bi bi-eye-slash text-main'"></i>
-                                            </span>
-                                        </div>
-
-
-                                        <p v-if="err.password" class="text-danger pt-2">
-                                            {{ err.password }}
-                                        </p>
-                                    </div>
-
-
-                                    <div class="d-flex justify-content-between align-items-center mb-4">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="rememberMe">
-                                            <label class="form-check-label" for="rememberMe">Remember me</label>
-                                        </div>
-                                        <a href="#" class="text-decoration-none small">Forgot password?</a>
-                                    </div>
-
-                                    <div class="d-grid">
-                                        <button :disabled="isLoading" type="submit" class="btn btn-main btn-lg">
-
-                                            <div v-if="isLoading" class="spinner-border spinner-border-sm fw-medium"
-                                                role="status">
-                                                <span class="visually-hidden">Loading...</span>
-                                            </div>
-                                            <div v-else>
-                                                Sign In
-                                            </div>
-                                        </button>
-                                    </div>
-
-                                    <p class="text-center mt-4 mb-0">Don't have an account? <router-link
-                                            to="/register">Sign In</router-link> </p>
-                                </form>
-
-                            </div>
-                        </div>
-                    </div>
+                <!-- Email -->
+                <div class="mb-3">
+                  <label class="custom-label">
+                    <i class="bi bi-envelope"></i> Email
+                  </label>
+                  <input v-model="email" type="text" class="form-control"
+                    placeholder="name@example.com">
+                  <p v-if="err.email" class="text-danger pt-2">
+                    {{ err.email }}
+                  </p>
                 </div>
+
+                <!-- Password -->
+                <div class="mb-3">
+                  <label class="custom-label">
+                    <i class="bi bi-lock"></i> Password
+                  </label>
+
+                  <div class="input-group position-relative">
+                    <input v-model="password" :type="passwordType"
+                      class="form-control pe-5"
+                      placeholder="Enter your password" />
+
+                    <span class="password-eye" @click="togglePassword">
+                      <i :class="showPassword ? 'bi bi-eye' : 'bi bi-eye-slash'"></i>
+                    </span>
+                  </div>
+
+                  <p v-if="err.password" class="text-danger pt-2">
+                    {{ err.password }}
+                  </p>
+                </div>
+
+                <!-- Remember + Forgot -->
+                <div class="d-flex justify-content-between mb-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox">
+                    <label class="form-check-label text-white ms-2">
+                      Remember me
+                    </label>
+                  </div>
+                  <a href="#" class="forgot-link">
+                    Forgot password?
+                  </a>
+                </div>
+
+                <!-- Button -->
+                <div class="d-grid">
+                  <button :disabled="isLoading"
+                    type="submit"
+                    class="btn btn-primary btn-lg login-btn">
+
+                    <span v-if="isLoading"
+                      class="spinner-border spinner-border-sm">
+                    </span>
+
+                    <span v-else>
+                      Sign In
+                    </span>
+                  </button>
+                </div>
+
+                <p class="text-center text-white mt-4">
+                  Don't have an account?
+                  <router-link to="/register" class="register-link">
+                    Register
+                  </router-link>
+                </p>
+
+              </form>
             </div>
-        </section>
+          </div>
+        </div>
+
+        <!-- Image -->
+        <div class="col-lg-6 d-none d-lg-block">
+          <img src="../../assets/image/3.png"
+            class="login-image"
+            alt="Login Image">
+        </div>
+
+      </div>
     </div>
+  </main>
 </template>
 
 <script setup>
@@ -139,17 +170,85 @@ const togglePassword = () => {
 
 </script>
 <style scoped>
-.password-eye {
-    position: absolute;
-    top: 50%;
-    right: 15px;
-    transform: translateY(-50%);
-    cursor: pointer;
-    color: #6c757d;
-    z-index: 5;
+.login-page {
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
 }
 
-.password-eye:hover {
-    color: #000;
+/* Card */
+.login-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+}
+
+/* Labels */
+.custom-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: white;
+}
+
+/* Inputs */
+.form-control {
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  transition: 0.3s;
+}
+
+.form-control:focus {
+  border-color: #4facfe;
+  box-shadow: 0 0 10px rgba(79, 172, 254, 0.4);
+}
+
+/* Eye icon */
+.password-eye {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #555;
+}
+
+/* Button */
+.login-btn {
+  border-radius: 12px;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* Links */
+.forgot-link {
+  color: #fff;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+}
+
+.register-link {
+  color: #4facfe;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.register-link:hover {
+  text-decoration: underline;
+}
+
+/* Image */
+.login-image {
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
 }
 </style>
