@@ -127,7 +127,7 @@
             </div>
 
             <!-- Name -->
-            <div class="text-start mt-5 ms-15">
+            <div class="text-start mt-6 ms-12">
               <h4 class="fw-medium mb-1">{{ profile.profile.name }}</h4>
               <div class="text-muted">{{ profile.profile.email }} / {{ profile.profile?.phone || 'N/A' }}</div>
             </div>
@@ -188,14 +188,17 @@
                   </div>
 
                   <div v-else-if="errorProducts" class="alert alert-danger">
-                    {{ errorProducts }}
                   </div>
 
                   <div v-else class="row g-4">
-                    <div class="col-sm-6 col-md-4 col-xl-3" v-for="own in myProducts" :key="own.id">
+
+                    <div v-if="maybeArray.length === 0" class="text-center w-100">
+                      <NoDataFound />
+                    </div>
+
+                    <div v-else class="col-sm-6 col-md-4 col-xl-3" v-for="own in maybeArray" :key="own.id">
                       <router-link class="text-decoration-none" :to="'/product-detail/' + own.id">
-                        <BaseCard :item="own">
-                        </BaseCard>
+                        <BaseCard :item="own" />
                       </router-link>
                     </div>
 
@@ -206,8 +209,11 @@
 
               <!-- PAYMENT TAB -->
               <div class="tab-pane fade" id="payment" role="tabpanel" aria-labelledby="payment-tab">
-                <div class="p-4">
-                  <SellProduct></SellProduct>
+                <div v-if="profile?.myPayment?.length">
+                  <NoDataFound />
+                </div>
+                <div v-else>
+                  <SellProduct />
                 </div>
               </div>
 
@@ -215,8 +221,7 @@
               <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
                 <div class="card border-0 shadow-sm rounded-4 p-4">
 
-                  <div class="d-flex align-items-center gap-2 mb-3">
-                    <span class="fs-4">🧾</span>
+                  <div class="d-flex align-items-center gap-2">
                     <h4 class="m-0 fw-bold">Order History</h4>
 
                     <button class="btn btn-outline-primary btn-sm ms-auto" @click="fetchMyPurchased()"
@@ -239,7 +244,12 @@
 
                   <div v-else class="d-flex flex-column gap-3">
                     <div class="row">
-                      <div class="col-lg-12">
+
+                      <div v-if="maybeArray.length === 0" class="text-center w-100">
+                        <NoDataFound />
+                      </div>
+
+                      <div v-else class="col-lg-12">
 
                         <table class="table table-striped text-center">
                           <thead>
@@ -330,6 +340,7 @@ const stats = ref({
 /* API state */
 const myProducts = ref([])
 const myPurchased = ref([])
+const maybeArray = ref([]);
 
 const loadingProducts = ref(false)
 const loadingPurchased = ref(false)
@@ -345,10 +356,10 @@ const fetchMyProducts = async (page = 1, perPage = 20) => {
   errorProducts.value = ""
   try {
     const res = await api.get(`/api/profile/products?page=${page}&per_page=${perPage}`)
-    console.log("PRODUCTS RAW:", res.data)
+    // console.log("PRODUCTS RAW:", res.data)
 
     // supports: {data:{data:[]}} OR {data:[]} OR []
-    const maybeArray =
+    maybeArray.value =
       res.data?.data?.data ??
       res.data?.data ??
       res.data ??
@@ -369,14 +380,14 @@ const fetchMyPurchased = async () => {
   errorPurchased.value = ""
   try {
     const res = await api.get("/api/profile/purchased")
-    console.log("PURCHASED RAW:", res.data)
+    // console.log("PURCHASED RAW:", res.data)
 
     const maybeArray =
       res.data?.data?.data ??
       res.data?.data ??
       res.data ??
       []
-
+    console.log(res);
     myPurchased.value = Array.isArray(maybeArray) ? maybeArray : []
   } catch (err) {
     console.log("PURCHASED ERROR:", err?.response?.data || err)
@@ -438,6 +449,7 @@ let location = ref("");
 
 import { watch } from "vue";
 import { notify } from "@/utils/toast"
+import NoDataFound from "@/components/Skeleton/NoDataFound.vue"
 
 
 
@@ -503,6 +515,7 @@ const saveProfile = async () => {
   }
 };
 
+console.log(profile.myPayment.length);
 /* load */
 onMounted(() => {
   // load products first

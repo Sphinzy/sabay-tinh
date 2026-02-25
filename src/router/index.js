@@ -25,6 +25,9 @@ const router = createRouter({
         { path: '/updateproduct', name: 'updateproduct', component: () => import('@/views/Shopping/UpdateProductView.vue') },
         { path: "/product-detail/:id", name: "productDetail", component: () => import("@/views/Shopping/ProductDetailView.vue"), },
         { path: "/catrgory", name: "catrgory", component: () => import("@/views/Categories/CategoryView.vue"), },
+        { path: "/skeletoncard", name: "skeletoncard", component: () => import("@/components/Skeleton/BaseCardSkeleton.vue"), },
+        { path: "/loading", name: "loading", component: () => import("@/components/Skeleton/Loading.vue"), },
+        { path: "/nodata", name: "nodata", component: () => import("@/components/Skeleton/NoDataFound.vue"), },
     ],
 })
 

@@ -1,5 +1,5 @@
 <template>
-    <div class="py-10">
+    <div class="">
         <!-- <NavBar></NavBar> -->
         <main>
             <section>

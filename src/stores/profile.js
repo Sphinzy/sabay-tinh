@@ -86,7 +86,7 @@ export const useProfileStore = defineStore("profile", () => {
   const getProfile = async () => {
     const res = await api.get('/api/me')
     profile.value = res.data.data
-    console.log(profile.value);
+    // console.log(profile.value);
   }
 
   return {

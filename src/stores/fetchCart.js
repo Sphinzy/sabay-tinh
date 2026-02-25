@@ -13,7 +13,7 @@ export const useCartStore = defineStore('cart', () => {
             const res = await api.get('/api/profile/carts')
             carts.value = res.data.data
             stallCarts.value = res.data.data;
-            console.log(res.data.data);
+            // console.log(res.data.data);
         } catch (error) {
             console.error(error);
         }

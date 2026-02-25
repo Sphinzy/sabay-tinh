@@ -8,8 +8,6 @@ export const useProductStore = defineStore("product", () => {
   async function fetchProducts() {
     let res = await api.get("api/products?per_page=50");
     products.value = res.data.data;
-    console.log(res);
-    console.log(res.data.data);
   }
 
   return { fetchProducts, products };

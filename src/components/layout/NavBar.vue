@@ -48,7 +48,7 @@
 
           <div class="ms-3">
             <router-link to="/profile">
-            <img id="logoImage" class="rounded-circle" src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg" alt="">
+            <img id="logoImage" class="rounded-circle" :src="prof.profile.avatar" alt="">
             </router-link>
           </div>
         </div>
@@ -102,15 +102,23 @@
 
 <script setup>
 import "@/assets/style.css";
-import { ref } from "vue"
+import { useCartStore } from "@/stores/fetchCart";
+import { useProfileStore } from "@/stores/profile";
+import { computed, onMounted, ref } from "vue"
+const prof = useProfileStore();
+const cartStore = useCartStore();
+const cartCount = computed(() => cartStore.carts?.items?.length || 0);
 
-const { cartCount } = defineProps({
-  cartCount: {
-    type: Number,
-    default: 0
-  }
+// const { cartCount } = defineProps({
+//   cartCount: {
+//     type: Number,
+//     default: 0
+//   }
+// })
+onMounted(() => {
+  prof.getProfile();
+  cartStore.fetchCart()
 })
-
 const isLoggedIn = ref(true)
 </script>
 

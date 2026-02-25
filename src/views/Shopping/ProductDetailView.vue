@@ -1,38 +1,26 @@
 <template>
-  <NavBar :cartCount="cartStore.carts?.items?.length || 0"></NavBar>
-
-  <div class="container py-15">
-    <button
-      @click="router.back()"
-      class="btn text-muted text-decoration-none mb-4 btn-outline-main"
-    >
+  <NavBar></NavBar>
+  <div v-if="loading">
+    <Loading></Loading>
+  </div>
+  <div v-else class="container py-15">
+    <button @click="router.back()" class="btn text-muted text-decoration-none mb-4 btn-outline-main">
       <i class="bi bi-arrow-left me-2"></i>Back to Shop
     </button>
 
-    <!-- Loading -->
-    <div v-if="loading" class="text-center py-5">
-      <div class="spinner-border text-main" role="status"></div>
-    </div>
 
     <!-- Product -->
-    <div v-else-if="product" class="row g-5 align-items-start">
+    <div class="row g-5 align-items-start">
       <div class="col-lg-6">
         <div class="product-card shadow-sm rounded-4 p-4 bg-white">
           <div class="image-box rounded-4 overflow-hidden mb-4">
             <img :src="product.image" class="img-fluid w-100" alt="product" />
           </div>
 
-          <div
-            v-if="product.creator"
-            class="seller-box d-flex align-items-center justify-content-between p-3 rounded-4"
-          >
+          <div v-if="product.creator"
+            class="seller-box d-flex align-items-center justify-content-between p-3 rounded-4">
             <div class="d-flex align-items-center gap-3">
-              <img
-                :src="product.creator.avatar"
-                class="rounded-circle shadow-sm"
-                width="55"
-                height="55"
-              />
+              <img :src="product.creator.avatar" class="rounded-circle shadow-sm" width="55" height="55" />
               <div>
                 <p class="fw-semibold mb-0">
                   {{ product.creator.name }}
@@ -63,7 +51,7 @@
             {{ product.title }}
           </h1>
 
-          <div  class="mb-4">
+          <div class="mb-4">
             <!-- <h6 class="section-title mb-3 text-main">Description</h6> -->
             <div class="spec-box">
               {{ product.description }}
@@ -105,6 +93,7 @@ import api from "@/api/http";
 import { notify } from "@/utils/toast";
 import NavBar from "@/components/layout/NavBar.vue";
 import { useCartStore } from "@/stores/fetchCart";
+import Loading from "@/components/Skeleton/Loading.vue";
 
 const cartStore = useCartStore();
 const route = useRoute();
@@ -114,7 +103,7 @@ const loading = ref(true);
 const qty = ref(1)
 
 
-const toast = notify();
+const notifier = notify();
 const fetchProductDetail = async () => {
   try {
     const res = await api.get(`api/products/${route.params.id}`, {
@@ -129,15 +118,46 @@ const fetchProductDetail = async () => {
     loading.value = false;
   }
 };
-const handleAddToCart = async (id) => {
-  const formData = new FormData()
-  formData.append('product_id', id)
-  formData.append('qty', qty.value)
-  
-  await api.post(`/api/carts`, formData)
-  console.log(id);
-  cartStore.fetchCart()
-};
+const isAdding = ref(false);
+const handleAddToCart = async (productId) => {
+  if (isAdding.value) return; // prevent double-click
+  isAdding.value = true;
+
+  try {
+    // Fetch the latest cart directly from API
+    const cartRes = await api.get("/api/profile/carts", {
+      headers: { Accept: "application/json" },
+    });
+
+    const items = cartRes.data?.data?.items || [];
+    console.log(cartRes.data.data.items);
+    // Check if product is already in cart
+    const existingItem = items.find(
+      item => Number(item.product_id) === Number(productId) || Number(item.product?.id) === Number(productId)
+    );
+
+    if (existingItem) {
+      notifier.error("Product is already in the cart"); // show info notifier
+      return; // stop adding again
+    }
+
+    // Add product to cart
+    const formData = new FormData();
+    formData.append("product_id", productId);
+    formData.append("qty", 1);
+
+    await api.post("/api/carts", formData);
+    notifier.success("Product Added"); // show success notifier
+
+    // Refresh your store after adding
+    await cartStore.fetchCart();
+  } catch (error) {
+    console.error(error);
+    notifier.error("Failed to add product"); // show error notifier
+  } finally {
+    isAdding.value = false;
+  }
+};;
 
 onMounted(fetchProductDetail);
 </script>
@@ -221,6 +241,7 @@ onMounted(fetchProductDetail);
   font-weight: 600;
   color: #6b7280;
 }
+
 /* 
 .spec-box {
   background: #f9fafb;
@@ -248,4 +269,3 @@ onMounted(fetchProductDetail);
   color: #111827;
 }
 </style>
-
