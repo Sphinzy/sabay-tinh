@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="py-10">
         <!-- <NavBar></NavBar> -->
         <main>
             <section>
@@ -69,55 +69,146 @@
                                             <!-- Modal -->
                                             <div class="modal fade" :id="`exampleModal${order.id}`" tabindex="-1"
                                                 :aria-labelledby="`exampleModalLabel${order.id}`" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h1 class="modal-title fs-5"
-                                                                :id="`exampleModalLabel${order.id}`">
-                                                                Transaction
-                                                            </h1>
+                                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                                    <div
+                                                        class="modal-content border-0 shadow rounded-4 overflow-hidden">
+                                                        <!-- Header -->
+                                                        <div class="modal-header bg-light border-0 px-4 py-3">
+                                                            <div>
+                                                                <h5 class="modal-title fw-bold mb-0"
+                                                                    :id="`exampleModalLabel${order.id}`">
+                                                                    Transaction
+                                                                </h5>
+                                                                <div class="text-muted small">
+                                                                    Receive • Order #{{ order.id }}
+                                                                </div>
+                                                            </div>
                                                             <button type="button" class="btn-close"
-                                                                data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                data-bs-dismiss="modal"></button>
                                                         </div>
-                                                        <div class="modal-body">
-                                                            <div class="row">
-                                                                <div class="col-12">
-                                                                    <h4>Recive</h4>
-                                                                    <div class="card border-0 ">
-                                                                        <img :src="order?.transaction_file || 'https://ualbiotech.com//wp-content/uploads/2023/03/C101307_Image_01.jpg'"
-                                                                            class="object-fit-contain" height="400"
-                                                                            alt="">
+
+                                                        <!-- Body -->
+                                                        <div class="modal-body p-4">
+                                                            <!-- Receipt Image -->
+                                                            <div class="mb-4">
+                                                                <div
+                                                                    class="d-flex align-items-center justify-content-between mb-2">
+                                                                    <h6 class="fw-bold mb-0">Receipt</h6>
+                                                                    <span class="badge rounded-pill text-bg-success"
+                                                                        v-if="order.transaction_file">
+                                                                        Uploaded
+                                                                    </span>
+                                                                    <span class="badge rounded-pill text-bg-secondary"
+                                                                        v-else>
+                                                                        No file
+                                                                    </span>
+                                                                </div>
+
+                                                                <div
+                                                                    class="card border-0 bg-light rounded-4 overflow-hidden">
+                                                                    <img :src="order?.transaction_file ||
+                                                                        'https://ualbiotech.com//wp-content/uploads/2023/03/C101307_Image_01.jpg'
+                                                                        " class="w-100" style="height: 360px; object-fit: contain" alt="transaction" />
+                                                                </div>
+
+                                                                <div class="text-muted small mt-2">
+                                                                    Tip: Click the image to open in new tab.
+                                                                    <a v-if="order?.transaction_file"
+                                                                        :href="order.transaction_file" target="_blank"
+                                                                        class="ms-1 text-decoration-none">
+                                                                        Open
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row g-3">
+                                                                <!-- Buyer Information -->
+                                                                <div class="col-12 col-md-6">
+                                                                    <div class="card border-0 bg-light rounded-4 h-100">
+                                                                        <div class="card-body">
+                                                                            <div
+                                                                                class="d-flex align-items-center gap-2 mb-3">
+                                                                                <span class="fs-5">🧍</span>
+                                                                                <h6 class="fw-bold mb-0">
+                                                                                    Buyer Information
+                                                                                </h6>
+                                                                            </div>
+
+                                                                            <div
+                                                                                class="d-flex justify-content-between mb-2">
+                                                                                <span class="text-muted">Name</span>
+                                                                                <span class="fw-semibold">{{
+                                                                                    order.buyer?.name || "N/A"
+                                                                                    }}</span>
+                                                                            </div>
+
+                                                                            <div
+                                                                                class="d-flex justify-content-between mb-2">
+                                                                                <span class="text-muted">Delivery</span>
+
+                                                                                <span class="badge rounded-pill mt-2"
+                                                                                    :class="order.is_delivery === 1
+                                                                                            ? 'text-bg-warning'
+                                                                                            : 'text-bg-info'
+                                                                                        ">
+                                                                                    {{
+                                                                                        order.is_delivery === 1
+                                                                                            ? "Pick Up"
+                                                                                    : "Delivery"
+                                                                                    }}
+                                                                                </span>
+                                                                            </div>
+
+                                                                            <div class="d-flex justify-content-between">
+                                                                                <span class="text-muted">Email</span>
+                                                                                <span class="fw-semibold">{{
+                                                                                    order.buyer?.email || "N/A"
+                                                                                    }}</span>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-12">
-                                                                    <hr>
-                                                                    <!-- Buyer Info -->
-                                                                    <div class="mb-3 p-3 border rounded shadow-sm">
-                                                                        <h6 class="text-primary mb-2">Buyer Information
-                                                                        </h6>
-                                                                        <p class="mb-1"><strong>Name:</strong> {{
-                                                                            order.buyer.name }}</p>
-                                                                        <p class="mb-1"><strong>Delivery
-                                                                                Method:</strong> {{ order.is_delivery
-                                                                                    === 1 ? 'Pick Up' : 'Delivery' }}</p>
-                                                                    </div>
 
-                                                                    <!-- Map Info -->
-                                                                    <div class="mb-3 p-3 border rounded shadow-sm">
-                                                                        <h6 class="text-primary mb-2">Map / Location
-                                                                        </h6>
-                                                                        <p class="mb-1">
-                                                                            <strong>Google Map:</strong>
+                                                                <!-- Map / Location -->
+                                                                <div class="col-12 col-md-6">
+                                                                    <div class="card border-0 bg-light rounded-4 h-100">
+                                                                        <div class="card-body">
+                                                                            <div
+                                                                                class="d-flex align-items-center gap-2 mb-3">
+                                                                                <span class="fs-5">📍</span>
+                                                                                <h6 class="fw-bold mb-0">
+                                                                                    Map / Location
+                                                                                </h6>
+                                                                            </div>
+
+                                                                            <div class="text-muted small mb-2">
+                                                                                Open buyer location in Google Maps
+                                                                            </div>
+
                                                                             <a :href="order.google_map_url"
                                                                                 target="_blank"
-                                                                                class="text-decoration-none text-info">
+                                                                                class="btn btn-outline-main w-100 rounded-pill fw-semibold"
+                                                                                :class="{
+                                                                                    disabled: !order.google_map_url,
+                                                                                }">
                                                                                 View Location
                                                                             </a>
-                                                                        </p>
+
+                                                                            <div v-if="!order.google_map_url"
+                                                                                class="text-danger small mt-2">
+                                                                                No location URL provided.
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
+                                                        </div>
 
+                                                        <!-- Footer -->
+                                                        <div class="modal-footer border-0 bg-white px-4 py-3">
+                                                            <button class="btn btn-outline-main rounded-pill px-4"
+                                                                data-bs-dismiss="modal">
+                                                                Close
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -231,23 +322,25 @@ onMounted(fetchOrder);
 </script>
 
 <style scoped>
-
 /* Shimmer animation */
 @keyframes shimmer {
-  0% { background-position: -400% 0; }
-  100% { background-position: 400% 0; }
+    0% {
+        background-position: -400% 0;
+    }
+
+    100% {
+        background-position: 400% 0;
+    }
 }
 
 .skeleton {
-  background-image: linear-gradient(
-    90deg,
-    #e0e0e0 25%,
-    #f8f8f8 37%,
-    #e0e0e0 63%
-  );
-  background-size: 400% 100%;
-  animation: shimmer 7s linear infinite;
-  border-radius: 6px;
-  height: 50px;
+    background-image: linear-gradient(90deg,
+            #e0e0e0 25%,
+            #f8f8f8 37%,
+            #e0e0e0 63%);
+    background-size: 400% 100%;
+    animation: shimmer 7s linear infinite;
+    border-radius: 6px;
+    height: 50px;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <NavBar :cartCount="cartStore.carts?.items?.length || 0"></NavBar>
 
-  <div class="container py-5">
+  <div class="container py-15">
     <button
       @click="router.back()"
       class="btn text-muted text-decoration-none mb-4 btn-outline-main"

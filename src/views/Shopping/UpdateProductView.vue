@@ -1,5 +1,5 @@
 <template>
-  <div class="container py-5">
+  <div class="container py-10">
     <div class="card shadow-sm border-0 p-4 rounded-4">
       <h3 class="fw-bold text-main mb-4">Edit Your Product</h3>
       <form @submit.prevent="handleUpdate">

@@ -1,7 +1,7 @@
 <template>
     <NavBar />
 
-    <div class="container py-5">
+    <div class="container py-14">
         <h3 class="mb-4 fw-bold">Shopping Cart</h3>
 
         <div class="row">
@@ -73,9 +73,9 @@
                     </div>
 
                     <div>
-                        <router-link to="/checkout" class="btn btn-main w-100">
+                        <button @click="btnCheckOut" :disabled="disable" class="btn btn-main w-100">
                             Proceed to Checkout
-                        </router-link>
+                        </button>
                         <router-link to="/shop" class="btn btn-outline-main w-100 mt-2">
                             Continue Shopping
                         </router-link>
@@ -108,9 +108,11 @@ import BaseModal from "@/components/ui/BaseModal.vue";
 import { useCartStore } from "@/stores/fetchCart";
 import { notify } from "@/utils/toast";
 import { computed, onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 
 const cartStore = useCartStore();
 const isDelete = ref(false)
+const router = useRouter();
 console.log(cartStore.stallCarts);
 const notifier = notify();
 const deleteId = ref(null);
@@ -164,6 +166,15 @@ const handleDelete = async (product_id) => {
         isDelete.value = false;
     }
     cartStore.fetchCart();
+}
+
+const disable = computed(() => {
+    return cartStore.stallCarts.items?.length == 0;
+});
+const btnCheckOut = () => {
+    if (disable) {
+        router.push('/checkout')
+    }
 }
 
 

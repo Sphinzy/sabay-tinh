@@ -1,6 +1,6 @@
 <template>
   <Navbar :cartCount="cartCount"></Navbar>
-  <div class="container py-5">
+  <div class="container py-15">
     <h2 class="text-center mb-5 fw-bold" style="color: #093c87">ALL Product</h2>
 
     <div class="row g-4">

@@ -2,7 +2,7 @@
   <div class="seller-dashboard">
     <Navbar />
 
-    <div class="container py-5">
+    <div class="container py-10">
       <div class="row mb-5">
         <div class="col-lg-8">
           <h3 class="fw-bold mb-2">List an Item</h3>

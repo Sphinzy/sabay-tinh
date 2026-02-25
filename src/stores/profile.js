@@ -7,6 +7,7 @@ export const useProfileStore = defineStore("profile", () => {
   const myCart = ref([])
   const myPayment = ref([])
   const myPurchased = ref([])
+  const profile = ref({})
 
   const loadingProducts = ref(false)
   const loadingCart = ref(false)
@@ -82,6 +83,12 @@ export const useProfileStore = defineStore("profile", () => {
     }
   }
 
+  const getProfile = async () => {
+    const res = await api.get('/api/me')
+    profile.value = res.data.data
+    console.log(profile.value);
+  }
+
   return {
     myProducts,
     myCart,
@@ -99,5 +106,7 @@ export const useProfileStore = defineStore("profile", () => {
     fetchMyCart,
     fetchMyPaymentCheck,
     fetchMyPurchased,
+    getProfile,
+    profile,
   }
 })

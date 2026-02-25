@@ -1,7 +1,7 @@
 <template>
   <Navbar />
   <!-- hero banner -->
-  <div class="px-3 pt-3">
+  <div class="px-3 pt-10">
     <div class="hero-banner shadow-lg rounded-5 overflow-hidden">
       <div class="overlay d-flex align-items-center">
         <div class="container">
@@ -104,7 +104,7 @@
   </div>
 
   <!-- Featured Products -->
-  <div class="container py-5 text-main">
+  <div class="container py-5 text-main ">
     <h2 class="text-center mb-5 fw-bold">Featured Products</h2>
     <div class="row g-4">
       <div

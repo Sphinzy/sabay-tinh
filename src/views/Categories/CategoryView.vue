@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="py-10">
     <NavBar></NavBar>
     <main class="admin-main">
       <div class="container shadow-card">

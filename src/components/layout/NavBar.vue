@@ -1,6 +1,6 @@
 <template>
-  <header>
-    <nav class="navbar">
+  <header class="position-fixed w-100" style="z-index: 100;">
+    <nav class="navbar bg-body">
       <div class="container">
         <div class="d-flex">
           <!-- Mobile menu button -->
@@ -71,7 +71,6 @@
 
         </div>
       </div>
-      <hr class="bg-white w-100" />
     </nav>
   </header>
 
