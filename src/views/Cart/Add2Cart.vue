@@ -5,10 +5,9 @@
             <div class="product-showcase">
                 <div class="product-card">
                     <h2>Uomo Born In Roma Intense</h2>
-                    <!-- <p>2ml / 30 sprays</p> -->
                     <p class="price">$6,95</p>
-                    <button @click="openCart" class="add-to-cart-btn">
-                        Add to Cart
+                    <button @click="addToCartAndOpen" class="add-to-cart-btn" :disabled="cartStore.isLoading">
+                        {{ cartStore.isLoading ? 'Adding...' : 'Add to Cart' }}
                     </button>
                 </div>
             </div>
@@ -39,94 +38,136 @@
                     ← Continue shopping
                 </button>
 
-                <!-- Free Shipping Progress -->
-                <div class="shipping-progress">
-                    <p class="shipping-text" :class="{ 'free-shipping': hasFreeShipping }">
-                        {{ shippingMessage }}
-                    </p>
-                    <div class="progress-bar">
-                        <div class="progress-fill" :class="{ 'complete': hasFreeShipping }" :style="{ width: progressPercent + '%' }"></div>
-                    </div>
+                <!-- Loading State -->
+                <div v-if="cartStore.isLoading" class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Loading cart...</p>
                 </div>
 
-                <!-- Cart Items -->
-                <div class="cart-items">
-                    <div v-for="(item, index) in cartItems" :key="index" class="cart-item">
-                        <div class="item-image">
-                            <div class="placeholder-img">
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJ8XqAt2qMzmzzwBDOWxWEWzKhoo6h7eyv2g&s   "
-                                    class="o" alt="Product image">
-                            </div>
-                        </div>
-                        <div class="item-details">
-                            <h3>{{ item.name }}</h3>
-                            <p class="item-size">{{ item.size }}</p>
-                            <div class="qty-controls">
-                                <button class="qty-btn qty-minus" @click="decrementQty(index)">−</button>
-                                <input 
-                                    type="number" 
-                                    v-model.number="item.quantity" 
-                                    min="1"
-                                    class="qty-input"
-                                    readonly
-                                >
-                                <button class="qty-btn qty-plus" @click="incrementQty(index)">+</button>
-                                <button class="btn-remove" @click="removeItem(index)">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <polyline points="3 6 5 6 21 6"></polyline>
-                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="item-price">${{ formatPrice(item.price * item.quantity) }}</div>
-                    </div>
+                <!-- Error State -->
+                <div v-else-if="cartStore.error" class="error-state">
+                    <p>{{ cartStore.error }}</p>
+                    <button @click="fetchCart" class="retry-btn">Retry</button>
                 </div>
 
-                <!-- Footer -->
-                <div class="cart-footer">
-                    <div class="total-row">
-                        <span>Total products ({{ totalItems }})</span>
-                        <span>${{ formatPrice(totalPrice) }}</span>
-                    </div>
-                    <div class="total-row bold">
-                        <span>Total including VAT</span>
-                        <span>${{ formatPrice(totalPrice) }}</span>
-                    </div>
-                    <button @click="goToCheckout" class="checkout-btn">Checkout</button>
+                <!-- Empty Cart -->
+                <div v-else-if="cartStore.normalizedItems.length === 0" class="empty-cart">
+                    <p>Your cart is empty</p>
+                    <button @click="closeCart" class="continue-shopping">Start Shopping</button>
                 </div>
+
+                <template v-else>
+                    <!-- Free Shipping Progress -->
+                    <div class="shipping-progress">
+                        <p class="shipping-text" :class="{ 'free-shipping': hasFreeShipping }">
+                            {{ shippingMessage }}
+                        </p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" :class="{ 'complete': hasFreeShipping }" :style="{ width: progressPercent + '%' }"></div>
+                        </div>
+                    </div>
+
+                    <!-- Cart Items -->
+                    <div class="cart-items">
+                        <div v-for="item in cartStore.normalizedItems" :key="item.id" class="cart-item">
+                            <div class="item-image">
+                                <div class="placeholder-img">
+                                    <img :src="item.image" :alt="item.name">
+                                </div>
+                            </div>
+                            <div class="item-details">
+                                <h3>{{ item.name }}</h3>
+                                <p class="item-condition">{{ item.condition }}</p>
+                                <p class="item-seller">Seller: {{ item.creator?.name }}</p>
+                                <div class="qty-controls">
+                                    <div class="qty-input-wrapper">
+                                        <button class="qty-btn qty-minus" @click="updateQuantity(item, -1)" :disabled="cartStore.isUpdating">−</button>
+                                        <input 
+                                            type="number" 
+                                            :value="item.quantity" 
+                                            min="1"
+                                            class="qty-input"
+                                            readonly
+                                        >
+                                        <button class="qty-btn qty-plus" @click="updateQuantity(item, 1)" :disabled="cartStore.isUpdating">+</button>
+                                    </div>
+                                    <button class="btn-remove" @click="removeItem(item)" :disabled="cartStore.isUpdating">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="item-price">${{ formatPrice(item.price * item.quantity) }}</div>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="cart-footer">
+                        <div class="total-row">
+                            <span>Total products ({{ cartStore.totalItems }})</span>
+                            <span>${{ formatPrice(cartStore.totalPrice) }}</span>
+                        </div>
+                        <div class="total-row bold">
+                            <span>Total including VAT</span>
+                            <span>${{ formatPrice(cartStore.totalPrice) }}</span>
+                        </div>
+                        <button @click="goToCheckout" class="checkout-btn" :disabled="cartStore.isUpdating">
+                            Checkout
+                        </button>
+                    </div>
+                </template>
             </aside>
         </transition>
     </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useCartStore } from '@/stores/cart'
 
 const router = useRouter()
+const cartStore = useCartStore()
 const isCartOpen = ref(false)
 
-const cartItems = ref([
-    {
-        name: 'JPG LE MALE LE PARFUM',
-        // size: '10ml / 150 sprays',
-        price: 11.30,
-        quantity: 1
-    },
-    {
-        name: 'Liquid Brun',
-        // size: '5ml / 75 sprays',
-        price: 6.95,
-        quantity: 1
-    }
-])
-
+// Free shipping threshold
 const freeShippingThreshold = 60
+
+const fetchCart = async () => {
+    await cartStore.fetchCart()
+}
+
+const updateQuantity = async (item, change) => {
+    const newQuantity = item.quantity + change
+    if (newQuantity < 1) return
+    await cartStore.updateItemQuantity(item.id, newQuantity)
+}
+
+const removeItem = async (item) => {
+    await cartStore.removeItem(item.id)
+}
+
+const addToCartAndOpen = async () => {
+    const product = {
+        id: 25, // Using the ID from your API example
+        title: 'Computer',
+        price: 20.5
+    }
+    
+    try {
+        await cartStore.addItem(product)
+        openCart()
+    } catch (err) {
+        // Error handled in store
+    }
+}
 
 const openCart = () => {
     isCartOpen.value = true
     document.body.style.overflow = 'hidden'
+    fetchCart()
 }
 
 const closeCart = () => {
@@ -135,49 +176,31 @@ const closeCart = () => {
 }
 
 const goToCheckout = () => {
-    router.push({ name: 'cart' })
+    router.push({ name: 'checkout' })
 }
-
-const incrementQty = (index) => {
-    cartItems.value[index].quantity++
-}
-
-const decrementQty = (index) => {
-    if (cartItems.value[index].quantity > 1) {
-        cartItems.value[index].quantity--
-    }
-}
-
-const removeItem = (index) => {
-    cartItems.value.splice(index, 1)
-}
-
-const formatPrice = (price) => {
-    return price.toFixed(2).replace('.', ',')
-}
-
-const totalItems = computed(() => {
-    return cartItems.value.reduce((sum, item) => sum + item.quantity, 0)
-})
-
-const totalPrice = computed(() => {
-    return cartItems.value.reduce((sum, item) => sum + (item.price * item.quantity), 0)
-})
 
 const hasFreeShipping = computed(() => {
-    return totalPrice.value >= freeShippingThreshold
+    return cartStore.totalPrice >= freeShippingThreshold
 })
 
 const shippingMessage = computed(() => {
     if (hasFreeShipping.value) {
         return 'You got Free Shipping 🚚'
     }
-    const remaining = freeShippingThreshold - totalPrice.value
+    const remaining = freeShippingThreshold - cartStore.totalPrice
     return `$${formatPrice(remaining)} more for Free Shipping 🚚`
 })
 
 const progressPercent = computed(() => {
-    return Math.min((totalPrice.value / freeShippingThreshold) * 100, 100)
+    return Math.min((cartStore.totalPrice / freeShippingThreshold) * 100, 100)
+})
+
+const formatPrice = (price) => {
+    return price.toFixed(2).replace('.', ',')
+}
+
+onMounted(() => {
+    fetchCart()
 })
 </script>
 
@@ -194,7 +217,6 @@ const progressPercent = computed(() => {
     background: #f5f5f5;
 }
 
-/* Main Content */
 .main-content {
     transition: filter 0.3s ease;
 }
@@ -244,17 +266,17 @@ const progressPercent = computed(() => {
     width: 100%;
 }
 
-.add-to-cart-btn:hover {
+.add-to-cart-btn:hover:not(:disabled) {
     background: #00695c;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 137, 123, 0.3);
 }
 
-.add-to-cart-btn:active {
-    transform: translateY(0);
+.add-to-cart-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
-/* Overlay */
 .overlay {
     position: fixed;
     top: 0;
@@ -276,7 +298,6 @@ const progressPercent = computed(() => {
     opacity: 0;
 }
 
-/* Cart Sidebar */
 .cart-sidebar {
     position: fixed;
     top: 0;
@@ -343,7 +364,51 @@ const progressPercent = computed(() => {
     color: #00897b;
 }
 
-/* Shipping Progress */
+.loading-state, .error-state, .empty-cart {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    text-align: center;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #00897b;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.error-state p {
+    color: #dc3545;
+    margin-bottom: 16px;
+}
+
+.retry-btn {
+    background: #00897b;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.empty-cart p {
+    color: #666;
+    margin-bottom: 16px;
+    font-size: 16px;
+}
+
 .shipping-progress {
     padding: 0 24px 24px;
 }
@@ -378,7 +443,6 @@ const progressPercent = computed(() => {
     background: #198754;
 }
 
-/* Cart Items */
 .cart-items {
     flex: 1;
     overflow-y: auto;
@@ -414,11 +478,6 @@ const progressPercent = computed(() => {
     display: block;
 }
 
-.placeholder-img.small {
-    width: 60px;
-    height: 60px;
-}
-
 .item-details {
     flex: 1;
 }
@@ -430,9 +489,15 @@ const progressPercent = computed(() => {
     color: #1a1a1a;
 }
 
-.item-size {
+.item-condition {
     font-size: 13px;
     color: #888;
+    margin-bottom: 4px;
+}
+
+.item-seller {
+    font-size: 12px;
+    color: #666;
     margin-bottom: 12px;
 }
 
@@ -443,55 +508,64 @@ const progressPercent = computed(() => {
     white-space: nowrap;
 }
 
-/* ===== QTY CONTROLS (- + buttons) ===== */
 .qty-controls {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
+}
+
+.qty-input-wrapper {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    height: 36px;
+    overflow: hidden;
 }
 
 .qty-btn {
     width: 32px;
-    height: 32px;
-    border: 1px solid #ddd;
+    height: 100%;
+    border: none;
     background: white;
-    border-radius: 6px;
+    cursor: pointer;
     font-size: 18px;
     font-weight: 500;
-    color: #333;
-    cursor: pointer;
+    color: #666;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.15s ease;
+    user-select: none;
 }
 
-.qty-btn:hover {
+.qty-btn:hover:not(:disabled) {
     background: #f5f5f5;
-    border-color: #bbb;
+    color: #000;
 }
 
-.qty-btn:active {
-    background: #e0e0e0;
+.qty-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
 }
 
 .qty-minus {
-    color: #666;
+    border-right: 1px solid #eee;
 }
 
 .qty-plus {
-    color: #00897b;
+    border-left: 1px solid #eee;
 }
 
 .qty-input {
-    width: 48px;
-    height: 32px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
+    width: 40px;
+    height: 100%;
+    border: none;
     text-align: center;
     font-size: 14px;
     color: #333;
-    background: white;
+    background: transparent;
     outline: none;
     appearance: textfield;
 }
@@ -502,7 +576,6 @@ const progressPercent = computed(() => {
     margin: 0;
 }
 
-/* ===== REMOVE BUTTON ===== */
 .btn-remove {
     display: flex;
     align-items: center;
@@ -515,19 +588,22 @@ const progressPercent = computed(() => {
     padding: 4px 8px;
     border-radius: 6px;
     transition: all 0.15s ease;
-    margin-left: 4px;
 }
 
-.btn-remove:hover {
+.btn-remove:hover:not(:disabled) {
     color: #dc3545;
     background: rgba(220, 53, 69, 0.1);
+}
+
+.btn-remove:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
 }
 
 .btn-remove svg {
     stroke: currentColor;
 }
 
-/* Footer */
 .cart-footer {
     padding: 24px;
     border-top: 1px solid #e0e0e0;
@@ -562,9 +638,14 @@ const progressPercent = computed(() => {
     transition: all 0.2s;
 }
 
-.checkout-btn:hover {
+.checkout-btn:hover:not(:disabled) {
     background: #00695c;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 137, 123, 0.25);
+}
+
+.checkout-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 </style>

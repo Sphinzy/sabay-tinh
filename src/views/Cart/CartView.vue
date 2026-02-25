@@ -2,8 +2,12 @@
     <div class="checkout container">
         <div class="row min-vh-100">
 
-            <!-- LEFT SIDE -->
+            <!-- LEFT SIDE: Checkout Form -->
             <div class="col-lg-7 col-12 p-5 bg-white">
+                <router-link to="/cartcheck" class="text-main mb-3 d-inline-block back-link">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Cart
+                </router-link>
+
                 <h3 class="mb-4">Contact</h3>
 
                 <!-- Email -->
@@ -12,11 +16,10 @@
                     <label>Email</label>
                 </div>
 
-                <div class="form-check mb-4 d-flex align-items-center">
-                    <input class="form-check-input me-2" type="checkbox" v-model="form.news">
-                    <label class="form-check-label">Remember me</label>
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" v-model="form.news">
+                    <label class="form-check-label">Email me with news and offers</label>
                 </div>
-
 
                 <h3 class="mb-3">Delivery</h3>
 
@@ -30,48 +33,22 @@
                     <label>Country / Region</label>
                 </div>
 
-                <!-- Name -->
-                <div class="row mb-3">
-                    <div class="col">
-                        <div class="field">
-                            <input class="form-control input" v-model="form.firstName" placeholder=" ">
-                            <label>First name (optional)</label>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="field">
-                            <input class="form-control input" v-model="form.lastName" placeholder=" ">
-                            <label>Last name</label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Address -->
+                <!-- Address & Location -->
                 <div class="field mb-3">
-                    <input class="form-control input" v-model="form.address" placeholder=" ">
+                    <input v-model="form.address" type="text" class="form-control input" placeholder=" ">
                     <label>Address</label>
                 </div>
 
-                <!-- Apartment -->
-                <div class="field mb-3">
-                    <input class="form-control input" v-model="form.apartment" placeholder=" ">
-                    <label>Apartment, suite, etc. (optional)</label>
-                </div>
-
-                <!-- Postal & City -->
-                <div class="row mb-3">
-                    <div class="col">
-                        <div class="field">
-                            <input class="form-control input" v-model="form.postal" placeholder=" ">
-                            <label>Postal code</label>
-                        </div>
+                <div class="d-flex gap-3 mb-3 align-items-start">
+                    <div class="field flex-grow-1">
+                        <input v-model="form.location" type="text" class="form-control input" placeholder=" ">
+                        <label>Location URL / Coordinates</label>
                     </div>
-                    <div class="col">
-                        <div class="field">
-                            <input class="form-control input" v-model="form.city" placeholder=" ">
-                            <label>City</label>
-                        </div>
-                    </div>
+                    <button class="btn btn-outline-dark location-btn" @click="detectLocation"
+                        :disabled="locationLoading">
+                        <i class="bi bi-geo-alt me-1"></i>
+                        {{ locationLoading ? 'Locating...' : 'Detect' }}
+                    </button>
                 </div>
 
                 <div class="form-check mb-4">
@@ -79,53 +56,89 @@
                     <label class="form-check-label">Save this information for next time</label>
                 </div>
 
-                <button class="btn btn-dark w-100 py-3">Continue to shipping</button>
+                <button class="btn btn-dark w-100 py-3" @click="handleOrder">
+                    <i class="bi bi-lock-fill me-2"></i>Place Order
+                </button>
             </div>
 
-
-            <!-- RIGHT SIDE ORDER SUMMARY -->
+            <!-- RIGHT SIDE: Order Summary -->
             <div class="col-lg-5 col-12 summary p-5">
+                <h4 class="mb-4">Order Summary</h4>
 
-                <div v-for="item in cart" :key="item.id" class="cart-item d-flex align-items-center mb-4">
-                    <div class="product-img-wrapper">
-                        <img :src="item.image" class="product-img object-fit-contain">
-                        <span class="quantity-badge">{{ item.qty || 1 }}</span>
+                <!-- Delivery Method -->
+                <div class="mb-4">
+                    <label class="form-label fw-bold mb-2">Delivery Method</label>
+                    <div class="d-flex gap-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="deliveryOption" id="delivery"
+                                value="delivery" v-model="deliveryOption">
+                            <label class="form-check-label" for="delivery">
+                                <i class="bi bi-truck me-1"></i>Delivery
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="deliveryOption" id="pickup"
+                                value="pickup" v-model="deliveryOption">
+                            <label class="form-check-label" for="pickup">
+                                <i class="bi bi-shop me-1"></i>Pick Up
+                            </label>
+                        </div>
                     </div>
-                    <div class="ms-3 flex-grow-1">
-                        <div class="fw-semibold">{{ item.name }}</div>
-                        <small class="text-muted">{{ item.desc }}</small>
-                    </div>
-                    <div class="price">${{ item.price }}</div>
                 </div>
 
-                <div class="d-flex mb-4">
-                    <div class="field flex-grow-1 me-2">
-                        <input class="form-control input" placeholder=" ">
-                        <label>Discount code</label>
+                <!-- QR Code Section -->
+                <div class="qr-section text-center p-4 bg-white rounded-3 mb-4">
+                    <h6 class="mb-3 text-muted">Scan to View Image</h6>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn6QptGd5m5pU69hip6j-Hy9kvrQ5VqUK2Fw&s "
+                        class="qr-code img-fluid" alt="QR Code">
+                    <p class="small text-muted mt-2 mb-0">
+                        Scan this QR to open the image
+                    </p>
+                </div>
+
+                <!-- Payment Proof - FULL WIDTH -->
+                <div class="mb-4">
+                    <label class="form-label fw-bold mb-2">Payment Proof</label>
+                    <div class="upload-box" :class="{ 'has-image': imagePreview }">
+                        <input type="file" @change="handleImage" class="file-input" accept="image/*" />
+
+                        <div v-if="!imagePreview" class="upload-placeholder">
+                            <i class="bi bi-cloud-arrow-up fs-4 mb-2"></i>
+                            <span class="small text-muted">Click to upload</span>
+                        </div>
+
+                        <div v-else class="image-preview-wrapper">
+                            <img :src="imagePreview" class="img-fluid rounded" alt="Payment Proof" />
+                            <button type="button" @click="removeImage" class="btn-remove">
+                                <i class="bi bi-x-circle-fill"></i>
+                            </button>
+                        </div>
                     </div>
-                    <button class="btn btn-outline-secondary">Apply</button>
                 </div>
 
                 <hr>
 
                 <div class="d-flex justify-content-between mb-2">
-                    <span>Subtotal · {{ cart.length }} items</span>
+                    <span>Subtotal · {{cart.reduce((a, b) => a + b.qty, 0)}} items</span>
                     <span>${{ subtotal }}</span>
                 </div>
 
                 <div class="d-flex justify-content-between mb-2 text-muted">
                     <span>Shipping</span>
-                    <span>Enter shipping address</span>
+                    <span v-if="deliveryOption === 'pickup'">Free</span>
+                    <span v-else-if="deliveryOption === 'delivery'">Calculated at next step</span>
+                    <span v-else>Enter shipping address</span>
                 </div>
 
                 <hr>
 
-                <div class="d-flex justify-content-between total">
+                <div class="d-flex justify-content-between total mb-1">
                     <span>Total</span>
+                    <span class="text-muted small">USD</span>
                     <span>${{ subtotal }}</span>
                 </div>
+                <small class="text-muted d-block mb-4">Including tax</small>
 
-                <small class="text-muted">Including tax</small>
             </div>
 
         </div>
@@ -133,8 +146,9 @@
 </template>
 
 <script setup>
-import { reactive, computed } from 'vue'
+import { reactive, computed, ref } from 'vue'
 
+// Form State
 const form = reactive({
     email: '',
     news: false,
@@ -145,60 +159,147 @@ const form = reactive({
     apartment: '',
     postal: '',
     city: '',
+    location: '',
     save: false
 })
 
+// Delivery & Image State
+const deliveryOption = ref('')
+const locationLoading = ref(false)
+const imagePreview = ref(null)
+
+// Cart Data (kept for calculations)
 const cart = reactive([
-    { id: 1, name: 'PDM Althair', desc: '', qty: 2, price: 12.95, image: 'https://via.placeholder.com/60 ' },
-    { id: 2, name: 'Stronger With You Intensely', desc: '', qty: 1, price: 6.95, image: 'https://via.placeholder.com/60 ' },
-    { id: 3, name: 'Liquid Brun', desc: '', qty: 3, price: 6.95, image: 'https://fimgs.net/mdimg/perfume-thumbs/375x500.94713.jpg' }
+    { id: 1, name: 'PDM Althair', desc: 'Eau de Parfum', qty: 2, price: 12.95, image: 'https://via.placeholder.com/60 ' },
+    { id: 2, name: 'Stronger With You Intensely', desc: 'Giorgio Armani', qty: 1, price: 6.95, image: 'https://via.placeholder.com/60 ' },
+    { id: 3, name: 'Liquid Brun', desc: 'Maison Margiela', qty: 3, price: 6.95, image: 'https://fimgs.net/mdimg/perfume-thumbs/375x500.94713.jpg ' }
 ])
 
+// Computed
 const subtotal = computed(() =>
-    cart.reduce((sum, item) => sum + item.price, 0).toFixed(2)
+    cart.reduce((sum, item) => sum + (item.price * item.qty), 0).toFixed(2)
 )
+
+// Convert Decimal Degrees to DMS format (e.g., 11°33'07.3"N 104°54'58.8"E)
+const convertToDMS = (dd, isLatitude) => {
+    const dir = dd < 0 ? (isLatitude ? 'S' : 'W') : (isLatitude ? 'N' : 'E')
+    const absDD = Math.abs(dd)
+    const degrees = Math.floor(absDD)
+    const minutesFloat = (absDD - degrees) * 60
+    const minutes = Math.floor(minutesFloat)
+    const seconds = (minutesFloat - minutes) * 60
+    
+    return `${degrees}°${minutes.toString().padStart(2, '0')}'${seconds.toFixed(1)}"${dir}`
+}
+
+// Methods
+const detectLocation = () => {
+    if (!navigator.geolocation) {
+        alert('Geolocation is not supported by your browser')
+        return
+    }
+
+    locationLoading.value = true
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const lat = position.coords.latitude
+            const lng = position.coords.longitude
+            
+            const latDMS = convertToDMS(lat, true)
+            const lngDMS = convertToDMS(lng, false)
+            
+            form.location = `${latDMS} ${lngDMS}`
+            locationLoading.value = false
+        },
+        (error) => {
+            alert('Unable to retrieve your location')
+            locationLoading.value = false
+        }
+    )
+}
+
+const handleImage = (event) => {
+    const file = event.target.files[0]
+    if (file) {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+            imagePreview.value = e.target.result
+        }
+        reader.readAsDataURL(file)
+    }
+}
+
+const removeImage = () => {
+    imagePreview.value = null
+}
+
+const handleOrder = () => {
+    // Validation
+    if (!form.email || !form.address) {
+        alert('Please fill in required fields')
+        return
+    }
+    if (!deliveryOption.value) {
+        alert('Please select a delivery method')
+        return
+    }
+    if (!imagePreview.value) {
+        alert('Please upload payment proof')
+        return
+    }
+
+    console.log('Order placed:', {
+        form,
+        deliveryOption: deliveryOption.value,
+        cart: cart,
+        total: subtotal.value
+    })
+    alert('Order placed successfully!')
+}
 </script>
 
 <style scoped>
-/* ===== GENERAL ===== */
+/* ===== BASE ===== */
 .checkout {
-    font-family: Inter, system-ui, Arial;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     color: #111;
 }
 
 .summary {
     background: #f6f6f7;
+    border-left: 1px solid #e9e9e9;
 }
 
-hr {
-    opacity: .08;
+/* ===== BACK LINK ===== */
+.back-link {
+    color: #666;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
 }
 
-/* ===== INPUT BASE ===== */
+.back-link:hover {
+    color: #111;
+}
+
+/* ===== INPUTS & FLOATING LABELS ===== */
 .input {
     border-radius: 12px;
     border: 1px solid #dcdcdc;
     transition: all .18s ease;
     background: white;
+    font-size: 14px;
 }
 
-/* focus look */
 .input:focus {
     border-color: #111;
-    box-shadow: 0 0 0 3px rgba(0,0,0,.06);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, .06);
 }
 
-.form-control:focus,
-.form-select:focus {
-    box-shadow: none;
-}
-
-/* ===== FLOATING FIELD ===== */
 .field {
     position: relative;
 }
 
-/* input spacing */
 .field input,
 .field select {
     height: 54px;
@@ -206,12 +307,10 @@ hr {
     line-height: 1.2;
 }
 
-/* hide placeholder text */
 .field input::placeholder {
     color: transparent;
 }
 
-/* LABEL */
 .field label {
     position: absolute;
     left: 14px;
@@ -219,25 +318,114 @@ hr {
     transform: translateY(-50%);
     color: #8a8a8a;
     font-size: 14px;
-    transition: all .16s cubic-bezier(.4,0,.2,1);
+    transition: all .16s cubic-bezier(.4, 0, .2, 1);
     pointer-events: none;
     letter-spacing: .2px;
 }
 
-/* FLOAT EFFECT */
-.field input:focus + label,
-.field input:not(:placeholder-shown) + label,
-.select-field select:focus + label,
-.select-field select:not([value=""]) + label {
+.field input:focus+label,
+.field input:not(:placeholder-shown)+label,
+.select-field select:focus+label,
+.select-field select:not([value=""])+label {
     top: 7px;
     transform: none;
     font-size: 12px;
     color: #000;
 }
 
-/* ===== SELECT FIX ===== */
 .select-field select {
     appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg ' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+}
+
+/* ===== LOCATION BUTTON ===== */
+.location-btn {
+    height: 54px;
+    border-radius: 12px;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+/* ===== DELIVERY OPTIONS ===== */
+.form-check-input:checked {
+    background-color: #111;
+    border-color: #111;
+}
+
+.form-check-label {
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* ===== IMAGE UPLOAD - FULL WIDTH ===== */
+.upload-box {
+    position: relative;
+    border: 2px dashed #dcdcdc;
+    border-radius: 12px;
+    height: 120px;
+    width: 100%;
+    overflow: hidden;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.upload-box:hover {
+    border-color: #111;
+}
+
+.upload-box.has-image {
+    border-style: solid;
+    border-color: #111;
+}
+
+.file-input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.upload-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+}
+
+.image-preview-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.image-preview-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.btn-remove {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: white;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 3;
+    color: #dc3545;
 }
 
 /* ===== CHECKBOX ===== */
@@ -270,48 +458,7 @@ hr {
 
 .btn-dark:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 14px rgba(0,0,0,.15);
-}
-
-/* ===== CART ===== */
-.product-img-wrapper {
-    position: relative;
-    display: inline-block;
-}
-
-.product-img {
-    width: 64px;
-    height: 64px;
-    border-radius: 14px;
-    object-fit: cover;
-    border: 1px solid #e9e9e9;
-    background: white;
-}
-
-.quantity-badge {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background: #111;
-    color: white;
-    font-size: 11px;
-    font-weight: 600;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid #f6f6f7;
-}
-
-.cart-item {
-    padding-bottom: 14px;
-    border-bottom: 1px solid rgba(0,0,0,.04);
-}
-
-.price {
-    font-weight: 600;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, .15);
 }
 
 /* ===== TOTAL ===== */
@@ -319,17 +466,35 @@ hr {
     font-size: 24px;
     font-weight: 700;
     letter-spacing: .2px;
+    align-items: baseline;
 }
 
-/* ===== DISCOUNT INPUT ===== */
-.summary .field input {
-    background: #fff;
+.total span:nth-child(2) {
+    margin-left: auto;
+    margin-right: 8px;
+    font-size: 12px;
+}
+
+/* ===== QR CODE ===== */
+.qr-section {
+    border: 1px solid #e9e9e9;
+}
+
+.qr-code {
+    max-width: 200px;
+    border-radius: 8px;
 }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 991px) {
     .summary {
+        border-left: none;
         border-top: 1px solid #eee;
+    }
+
+    .location-btn {
+        font-size: 12px;
+        padding: 0 12px;
     }
 }
 </style>
