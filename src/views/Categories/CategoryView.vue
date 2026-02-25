@@ -25,7 +25,7 @@
                 class="btn-create"
               >
                 <span v-if="!isLoading">Create</span>
-                <span v-else class="spinner"></span>
+                <span v-else class="spinner-border width-hight-spin"></span>
               </button>
             </div>
           </div>
@@ -56,7 +56,7 @@
                     />
                   </template>
                   <template v-else>
-                    <span class="cat-name">{{ cat.name }}</span>
+                    <span class="cat-name ms-100">{{ cat.name }}</span>
                   </template>
                 </td>
                 <td class="text-right">
@@ -69,7 +69,7 @@
                         <i class="bi bi-x-lg"></i>
                       </button>
                     </template>
-                    <template v-else>
+                    <template v-else class="icon-delete-update">
                       <button
                         class="btn btn-outline-primary"
                         @click="startEdit(cat)"
@@ -257,66 +257,70 @@ onMounted(fetchCategories);
 }
 
 /* ── Input + Create ── */
+.width-hight-spin {
+  width: 15px !important;
+  height: 15px !important;
+}
 .input-wrapper {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   background: #f8f9ff;
   border: 1.5px solid #e0e3f5;
   border-radius: 12px;
   overflow: hidden;
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
-  gap: 0;
+  transition: border-color 0.2s;
+  height: 46px;
 }
 
 .input-wrapper:focus-within {
   border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
 }
 
 .input-icon {
-  padding: 0 10px 0 14px;
+  display: flex;
+  align-items: center;
+  padding-left: 14px;
   color: #a0a8c8;
-  font-size: 18px;
-  line-height: 1;
-  user-select: none;
 }
 
 .input-wrapper input {
+  flex: 1;
   border: none;
   background: transparent;
   outline: none;
-  padding: 11px 8px 11px 0;
+  padding: 0 12px;
   font-size: 14px;
-  font-family: "DM Sans", sans-serif;
   color: #1a1d2e;
-  width: 220px;
-}
-
-.input-wrapper input::placeholder {
-  color: #b0b8d0;
+  height: 100%;
 }
 
 .btn-create {
   background: linear-gradient(135deg, #6366f1, #818cf8);
   color: white;
   border: none;
-  padding: 11px 20px;
+  padding: 0 24px;
   font-family: "DM Sans", sans-serif;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  height: 100%;
   transition:
     opacity 0.2s,
-    transform 0.1s;
+    background 0.2s;
   white-space: nowrap;
   display: flex;
   align-items: center;
-  gap: 4px;
 }
 
-.btn-create:hover:not(:disabled) {
+.btn-create:hover {
+  opacity: 0.9;
+}
+
+.btn-create:active {
+  background: #4f46e5;
+}
+
+/* .btn-create:hover:not(:disabled) {
   opacity: 0.88;
   transform: translateY(-1px);
 }
@@ -324,18 +328,18 @@ onMounted(fetchCategories);
 .btn-create:disabled {
   opacity: 0.55;
   cursor: not-allowed;
-}
+} */
 
 /* ── Spinner ── */
-.spinner {
+/* .spinner {
   display: inline-block;
-  width: 14px;
-  height: 14px;
+  width: 10px;
+  height: 10px;
   border: 2px solid rgba(255, 255, 255, 0.4);
   border-top-color: white;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
-}
+} */
 
 @keyframes spin {
   to {
@@ -373,10 +377,9 @@ onMounted(fetchCategories);
   text-transform: uppercase;
   color: #8b92a8;
   padding: 12px 16px;
-  text-align: left;
+  text-align: center;
   border-bottom: 1.5px solid #ebebf5;
 }
-
 .table-row {
   transition: background 0.15s;
 }
@@ -389,6 +392,7 @@ onMounted(fetchCategories);
   padding: 14px 16px;
   border-bottom: 1px solid #f0f2f8;
   vertical-align: middle;
+  text-align: center;
 }
 
 .id-cell {
@@ -423,7 +427,7 @@ onMounted(fetchCategories);
 /* ── Action Buttons ── */
 .button-group {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 8px;
   align-items: center;
 }
