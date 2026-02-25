@@ -1,7 +1,58 @@
 <template>
     <div class="app">
+        <!-- Loading State with Skeleton -->
+        <div v-if="loading" class="loading-overlay">
+            <!-- SKELETON: Remove this entire div when API is working -->
+            <div class="skeleton-container">
+                <!-- Header Skeleton -->
+                <div class="skeleton-header">
+                    <div class="skeleton-title"></div>
+                    <div class="skeleton-subtitle"></div>
+                </div>
+                
+                <!-- Stats Skeleton -->
+                <div class="skeleton-stats">
+                    <div class="skeleton-stat-card" v-for="n in 3" :key="n">
+                        <div class="skeleton-stat-label"></div>
+                        <div class="skeleton-stat-value"></div>
+                        <div class="skeleton-stat-change"></div>
+                    </div>
+                </div>
+                
+                <!-- Search Skeleton -->
+                <div class="skeleton-search"></div>
+                
+                <!-- Grid Skeleton -->
+                <div class="skeleton-grid">
+                    <div class="skeleton-card" v-for="n in 6" :key="n">
+                        <div class="skeleton-image"></div>
+                        <div class="skeleton-content">
+                            <div class="skeleton-line short"></div>
+                            <div class="skeleton-line"></div>
+                            <div class="skeleton-line medium"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END SKELETON -->
+            
+            <div class="spinner" style="display: none;"></div>
+            <p style="display: none;">Loading your purchases...</p>
+        </div>
+
+        <!-- Error State -->
+        <div v-if="error" class="error-banner">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span>{{ error }}</span>
+            <button @click="fetchOrders" class="retry-btn">Retry</button>
+        </div>
+
         <!-- Main Content -->
-        <main class="main-content">
+        <main class="main-content" v-if="!loading">
             <!-- Page Header -->
             <div class="page-header">
                 <div>
@@ -9,15 +60,15 @@
                     <p class="subtitle">Manage your order history and track deliveries</p>
                 </div>
                 <div class="view-toggle">
-                    <!-- <button @click="currentView = 'grid'" :class="{ active: currentView === 'grid' }">
+                    <button @click="currentView = 'grid'" :class="{ active: currentView === 'grid' }">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="3" y="3" width="7" height="7"></rect>
                             <rect x="14" y="3" width="7" height="7"></rect>
                             <rect x="14" y="14" width="7" height="7"></rect>
                             <rect x="3" y="14" width="7" height="7"></rect>
                         </svg>
-                    </button> -->
-                    <!-- <button @click="currentView = 'list'" :class="{ active: currentView === 'list' }">
+                    </button>
+                    <button @click="currentView = 'list'" :class="{ active: currentView === 'list' }">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="8" y1="6" x2="21" y2="6"></line>
                             <line x1="8" y1="12" x2="21" y2="12"></line>
@@ -26,7 +77,7 @@
                             <line x1="3" y1="12" x2="3.01" y2="12"></line>
                             <line x1="3" y1="18" x2="3.01" y2="18"></line>
                         </svg>
-                    </button> -->
+                    </button>
                 </div>
             </div>
 
@@ -44,8 +95,8 @@
                 </div>
                 <div class="stat-card">
                     <p class="stat-label">Rewards Points</p>
-                    <h3 class="stat-value">2,450</h3>
-                    <span class="stat-change gold">Gold Member</span>
+                    <h3 class="stat-value">{{ userStats.rewardsPoints || '2,450' }}</h3>
+                    <span class="stat-change gold">{{ userStats.membershipTier || 'Gold Member' }}</span>
                 </div>
             </div>
 
@@ -61,11 +112,11 @@
             </div>
 
             <!-- Orders Grid/List -->
-            <div :class="['orders-container', currentView]">
+            <div :class="['orders-container', currentView]" v-if="filteredOrders.length > 0">
                 <div v-for="order in filteredOrders" :key="order.id" class="order-card"
                     @click="openOrderDetails(order)">
                     <div class="order-image">
-                        <img :src="order.image" :alt="order.name">
+                        <img :src="order.image" :alt="order.name" @error="handleImageError">
                         <span class="status-badge" :class="order.status.toLowerCase()">
                             {{ order.status }}
                         </span>
@@ -94,7 +145,7 @@
             </div>
 
             <!-- Empty State -->
-            <div v-if="filteredOrders.length === 0" class="empty-state">
+            <div v-if="filteredOrders.length === 0 && !loading" class="empty-state">
                 <div class="empty-icon">
                     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="1.5">
@@ -104,8 +155,9 @@
                     </svg>
                 </div>
                 <h3>No orders found</h3>
-                <p>Try adjusting your search to find what you're looking for.</p>
-                <button @click="searchQuery = ''" class="clear-search-btn">Clear Search</button>
+                <p>{{ searchQuery ? 'Try adjusting your search to find what you\'re looking for.' : 'You haven\'t made any purchases yet.' }}</p>
+                <button v-if="searchQuery" @click="searchQuery = ''" class="clear-search-btn">Clear Search</button>
+                <button v-else @click="fetchOrders" class="clear-search-btn">Refresh</button>
             </div>
         </main>
 
@@ -152,10 +204,10 @@
 
                 <!-- Product Info -->
                 <div class="sidebar-product">
-                    <img :src="selectedOrder.image" :alt="selectedOrder.name">
+                    <img :src="selectedOrder.image" :alt="selectedOrder.name" @error="handleImageError">
                     <div class="product-details">
                         <h3>{{ selectedOrder.name }}</h3>
-                        <p class="product-meta">{{ selectedOrder.category }} • Qty: 1</p>
+                        <p class="product-meta">{{ selectedOrder.category }} • Qty: {{ selectedOrder.quantity || 1 }}</p>
                         <p class="product-price">${{ formatPrice(selectedOrder.price) }}</p>
                     </div>
                 </div>
@@ -164,32 +216,34 @@
                 <div class="order-summary">
                     <div class="summary-row">
                         <span>Subtotal</span>
-                        <span>${{ formatPrice(selectedOrder.price) }}</span>
+                        <span>${{ formatPrice(selectedOrder.price * (selectedOrder.quantity || 1)) }}</span>
                     </div>
                     <div class="summary-row">
                         <span>Shipping</span>
-                        <span class="free">Free</span>
+                        <span :class="{ free: selectedOrder.shipping === 0 || selectedOrder.shipping === undefined }">
+                            {{ selectedOrder.shipping ? formatPrice(selectedOrder.shipping) : 'Free' }}
+                        </span>
                     </div>
                     <div class="summary-row">
-                        <span>Tax (8%)</span>
-                        <span>${{ formatPrice(selectedOrder.price * 0.08) }}</span>
+                        <span>Tax ({{ (selectedOrder.taxRate || 0.08) * 100 }}%)</span>
+                        <span>${{ formatPrice((selectedOrder.price * (selectedOrder.quantity || 1)) * (selectedOrder.taxRate || 0.08)) }}</span>
                     </div>
                     <div class="summary-row total">
                         <span>Total</span>
-                        <span>${{ formatPrice(selectedOrder.price * 1.08) }}</span>
+                        <span>${{ formatPrice(calculateTotal(selectedOrder)) }}</span>
                     </div>
                 </div>
 
                 <!-- Actions -->
                 <div class="sidebar-actions">
-                    <button class="track-btn">
+                    <button class="track-btn" @click="trackPackage(selectedOrder)">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2">
                             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
                         </svg>
                         Track Package
                     </button>
-                    <button class="invoice-btn">Download Invoice</button>
+                    <button class="invoice-btn" @click="downloadInvoice(selectedOrder)">Download Invoice</button>
                 </div>
             </aside>
         </transition>
@@ -197,88 +251,286 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
+// API Configuration - Using your specific base URL
+const baseURL = 'https://ecommerce201.csm.linkpc.net'
+// const API_ENDPOINT = '/api/profile/purchased'
+
+// State
 const currentView = ref('grid')
 const searchQuery = ref('')
 const selectedOrder = ref(null)
+const orders = ref([])
+const loading = ref(false)
+const error = ref(null)
+const userStats = ref({})
 
-const orders = ref([
+// ============================================
+// TEST DATA - REMOVE WHEN API IS WORKING
+// ============================================
+// This is mock data to test the UI before connecting to real API
+// Delete this entire TEST_DATA constant when your API is ready
+const TEST_DATA = [
     {
-        id: 1,
-        name: 'Sony WH-1000XM5',
+        id: 'ord_001',
+        productName: 'Wireless Noise-Canceling Headphones',
         category: 'Electronics',
-        price: 348.00,
-        image: 'https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
-        status: 'Delivered',
-        date: '2023-10-15',
-        orderId: 'ORD-7782',
-        description: 'Industry Leading Noise Canceling Wireless Headphones with Auto Noise Canceling Optimizer.'
+        price: 299.99,
+        imageUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop',
+        status: 'delivered',
+        orderDate: '2024-01-15',
+        orderId: 'ORD-2024-001',
+        description: 'Premium over-ear headphones with active noise cancellation and 30-hour battery life.',
+        quantity: 1,
+        shippingCost: 0,
+        taxRate: 0.08,
+        trackingNumber: 'TRK123456789'
     },
     {
-        id: 2,
-        name: 'Keychron Q1 Pro',
-        category: 'Accessories',
+        id: 'ord_002',
+        productName: 'Mechanical Gaming Keyboard',
+        category: 'Gaming',
+        price: 149.50,
+        imageUrl: 'https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=400&h=300&fit=crop',
+        status: 'shipped',
+        orderDate: '2024-02-20',
+        orderId: 'ORD-2024-002',
+        description: 'RGB backlit mechanical keyboard with Cherry MX switches and customizable macros.',
+        quantity: 1,
+        shippingCost: 12.99,
+        taxRate: 0.08,
+        trackingNumber: 'TRK987654321'
+    },
+    {
+        id: 'ord_003',
+        productName: 'Organic Cotton T-Shirt Pack',
+        category: 'Fashion',
+        price: 45.00,
+        imageUrl: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=300&fit=crop',
+        status: 'processing',
+        orderDate: '2024-02-22',
+        orderId: 'ORD-2024-003',
+        description: 'Pack of 3 premium organic cotton t-shirts in various colors. Sustainable and comfortable.',
+        quantity: 2,
+        shippingCost: 5.99,
+        taxRate: 0.08,
+        trackingNumber: null
+    },
+    {
+        id: 'ord_004',
+        productName: 'Smart Fitness Watch',
+        category: 'Electronics',
         price: 199.00,
-        image: 'https://images.unsplash.com/photo-1595225476474-87563907a212?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
-        status: 'Shipped',
-        date: '2023-10-20',
-        orderId: 'ORD-7790',
-        description: 'Wireless Custom Mechanical Keyboard with QMK/VIA support and Aluminum Body.'
+        imageUrl: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop',
+        status: 'delivered',
+        orderDate: '2024-01-28',
+        orderId: 'ORD-2024-004',
+        description: 'Advanced fitness tracker with heart rate monitoring, GPS, and 7-day battery life.',
+        quantity: 1,
+        shippingCost: 0,
+        taxRate: 0.08,
+        trackingNumber: 'TRK456789123'
     },
     {
-        id: 3,
-        name: 'Herman Miller Aeron',
-        category: 'Furniture',
-        price: 1450.00,
-        image: 'https://images.unsplash.com/photo-1505843490538-5133c6c7d0e1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
-        status: 'Processing',
-        date: '2023-10-22',
-        orderId: 'ORD-7795',
-        description: 'Ergonomic office chair with Pellicle suspension and PostureFit SL.'
+        id: 'ord_005',
+        productName: 'Leather Weekend Bag',
+        category: 'Accessories',
+        price: 185.00,
+        imageUrl: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=300&fit=crop',
+        status: 'cancelled',
+        orderDate: '2024-02-10',
+        orderId: 'ORD-2024-005',
+        description: 'Handcrafted genuine leather duffle bag perfect for weekend getaways.',
+        quantity: 1,
+        shippingCost: 15.00,
+        taxRate: 0.08,
+        trackingNumber: null
     },
     {
-        id: 4,
-        name: 'Fujifilm X100V',
-        category: 'Photography',
-        price: 1399.00,
-        image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
-        status: 'Delivered',
-        date: '2023-09-10',
-        orderId: 'ORD-7650',
-        description: 'Premium compact digital camera with 26.1MP X-Trans CMOS 4 sensor.'
-    },
-    {
-        id: 5,
-        name: 'Apple Watch Ultra',
-        category: 'Wearables',
-        price: 799.00,
-        image: 'https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
-        status: 'Delivered',
-        date: '2023-08-15',
-        orderId: 'ORD-7400',
-        description: 'The most rugged and capable Apple Watch ever, designed for exploration.'
+        id: 'ord_006',
+        productName: 'Ceramic Coffee Mug Set',
+        category: 'Home',
+        price: 34.99,
+        imageUrl: 'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=400&h=300&fit=crop',
+        status: 'shipped',
+        orderDate: '2024-02-21',
+        orderId: 'ORD-2024-006',
+        description: 'Set of 4 handcrafted ceramic mugs with modern minimalist design.',
+        quantity: 1,
+        shippingCost: 8.99,
+        taxRate: 0.08,
+        trackingNumber: 'TRK789123456'
     }
-])
+]
+// ============================================
+// END TEST DATA
+// ============================================
 
+// Fetch orders from API
+const fetchOrders = async () => {
+    loading.value = true
+    error.value = null
+    
+    // ============================================
+    // TEST MODE: Uncomment below to use test data instead of API
+    // Remove this block when API is working
+    // ============================================
+    setTimeout(() => {
+        orders.value = TEST_DATA.map(mapApiOrderToComponent)
+        userStats.value = {
+            rewardsPoints: '2,450',
+            membershipTier: 'Gold Member'
+        }
+        loading.value = false
+    }, 1500) // Simulate 1.5s loading delay
+    return // Remove this return statement to enable API call
+    // ============================================
+    // END TEST MODE
+    // ============================================
+    
+    /* 
+    // REAL API CALL - Uncomment this block when API is ready
+    // Remove the test mode block above and uncomment below:
+    
+    try {
+        const response = await fetch(`${baseURL}/api/profile/purchased`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
+                'Accept': 'application/json'
+            },
+            credentials: 'include'
+        })
+
+        if (!response.ok) {
+            if (response.status === 401) {
+                throw new Error('Please log in to view your purchases')
+            }
+            if (response.status === 404) {
+                throw new Error('No purchase history found')
+            }
+            throw new Error(`Failed to load purchases: ${response.statusText}`)
+        }
+
+        const data = await response.json()
+        
+        // Handle different API response structures
+        if (Array.isArray(data)) {
+            orders.value = data.map(mapApiOrderToComponent)
+        } else if (data.orders) {
+            orders.value = data.orders.map(mapApiOrderToComponent)
+            userStats.value = data.stats || {}
+        } else if (data.data) {
+            orders.value = data.data.map(mapApiOrderToComponent)
+            userStats.value = data.meta || {}
+        } else {
+            orders.value = []
+        }
+        
+    } catch (err) {
+        console.error('Error fetching orders:', err)
+        error.value = err.message || 'Failed to load your purchases. Please try again.'
+    } finally {
+        loading.value = false
+    }
+    */
+}
+
+// Map API response to component format
+const mapApiOrderToComponent = (apiOrder) => {
+    return {
+        id: apiOrder.id || apiOrder._id || apiOrder.orderId,
+        name: apiOrder.productName || apiOrder.name || apiOrder.title,
+        category: apiOrder.category || apiOrder.productCategory || 'General',
+        price: parseFloat(apiOrder.price || apiOrder.amount || apiOrder.total || 0),
+        image: apiOrder.imageUrl || apiOrder.image || apiOrder.productImage || 'https://via.placeholder.com/400x300?text=No+Image',
+        status: capitalizeFirst(apiOrder.status || apiOrder.orderStatus || 'Processing'),
+        date: apiOrder.orderDate || apiOrder.createdAt || apiOrder.date,
+        orderId: apiOrder.orderId || apiOrder.id || apiOrder._id,
+        description: apiOrder.description || apiOrder.productDescription || '',
+        quantity: apiOrder.quantity || 1,
+        shipping: parseFloat(apiOrder.shippingCost || apiOrder.shipping || 0),
+        taxRate: parseFloat(apiOrder.taxRate || 0.08),
+        trackingNumber: apiOrder.trackingNumber || null,
+    }
+}
+
+// Helper functions
+const capitalizeFirst = (str) => {
+    if (!str) return ''
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
+}
+
+const calculateTotal = (order) => {
+    const qty = order.quantity || 1
+    const subtotal = order.price * qty
+    const shipping = order.shipping || 0
+    const taxRate = order.taxRate || 0.08
+    const tax = subtotal * taxRate
+    return subtotal + shipping + tax
+}
+
+const handleImageError = (e) => {
+    e.target.src = 'https://via.placeholder.com/400x300?text=Product+Image'
+}
+
+const trackPackage = (order) => {
+    if (order.trackingNumber) {
+        window.open(`https://track.example.com/${order.trackingNumber}`, '_blank')
+    } else {
+        alert('Tracking information not available yet')
+    }
+}
+
+const downloadInvoice = async (order) => {
+    try {
+        const response = await fetch(`${baseURL}/api/orders/${order.id}/invoice`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
+            }
+        })
+        
+        if (response.ok) {
+            const blob = await response.blob()
+            const url = window.URL.createObjectURL(blob)
+            const a = document.createElement('a')
+            a.href = url
+            a.download = `invoice-${order.orderId}.pdf`
+            document.body.appendChild(a)
+            a.click()
+            window.URL.revokeObjectURL(url)
+            document.body.removeChild(a)
+        } else {
+            alert('Invoice download failed')
+        }
+    } catch (err) {
+        console.error('Download error:', err)
+        alert('Failed to download invoice')
+    }
+}
+
+// Computed properties
 const filteredOrders = computed(() => {
     if (!searchQuery.value) return orders.value
     const query = searchQuery.value.toLowerCase()
     return orders.value.filter(order =>
-        order.name.toLowerCase().includes(query) ||
-        order.category.toLowerCase().includes(query) ||
-        order.orderId.toLowerCase().includes(query)
+        order.name?.toLowerCase().includes(query) ||
+        order.category?.toLowerCase().includes(query) ||
+        order.orderId?.toLowerCase().includes(query)
     )
 })
 
 const totalSpent = computed(() => {
-    return orders.value.reduce((sum, order) => sum + order.price, 0)
+    return orders.value.reduce((sum, order) => sum + (order.price * (order.quantity || 1)), 0)
 })
 
 const activeOrders = computed(() => {
-    return orders.value.filter(order => order.status !== 'Delivered').length
+    return orders.value.filter(order => order.status !== 'Delivered' && order.status !== 'Cancelled').length
 })
 
+// Methods
 const openOrderDetails = (order) => {
     selectedOrder.value = order
     document.body.style.overflow = 'hidden'
@@ -290,15 +542,24 @@ const closeOrderDetails = () => {
 }
 
 const getProgressWidth = (status) => {
-    if (status === 'Processing') return 15
-    if (status === 'Shipped') return 60
-    if (status === 'Delivered') return 100
-    return 0
+    const statusMap = {
+        'processing': 15,
+        'shipped': 60,
+        'delivered': 100,
+        'cancelled': 0
+    }
+    return statusMap[status.toLowerCase()] || 0
 }
 
 const formatPrice = (price) => {
-    return price.toFixed(2).replace('.', ',')
+    if (!price) return '0.00'
+    return price.toFixed(2)
 }
+
+// Initialize
+onMounted(() => {
+    fetchOrders()
+})
 </script>
 
 <style scoped>
@@ -318,11 +579,237 @@ const formatPrice = (price) => {
     background-attachment: fixed;
 }
 
-
-.avatar {
+/* ============================================
+   SKELETON LOADING STYLES
+   Remove these when API is working (optional)
+   ============================================ */
+.skeleton-container {
     width: 100%;
-    height: 100%;
-    background: url('https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80') center/cover;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 96px 40px 40px;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.skeleton {
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.skeleton-header {
+    margin-bottom: 32px;
+}
+
+.skeleton-title {
+    width: 280px;
+    height: 40px;
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+.skeleton-subtitle {
+    width: 320px;
+    height: 20px;
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 6px;
+}
+
+.skeleton-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.skeleton-stat-card {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 16px;
+    padding: 24px;
+    height: 140px;
+}
+
+.skeleton-stat-label {
+    width: 80px;
+    height: 14px;
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+    margin-bottom: 16px;
+}
+
+.skeleton-stat-value {
+    width: 120px;
+    height: 36px;
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 6px;
+    margin-bottom: 12px;
+}
+
+.skeleton-stat-change {
+    width: 100px;
+    height: 16px;
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+}
+
+.skeleton-search {
+    max-width: 600px;
+    height: 50px;
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 12px;
+    margin-bottom: 32px;
+}
+
+.skeleton-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 24px;
+}
+
+.skeleton-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.skeleton-image {
+    height: 240px;
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+.skeleton-content {
+    padding: 24px;
+}
+
+.skeleton-line {
+    height: 16px;
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+    margin-bottom: 12px;
+}
+
+.skeleton-line.short {
+    width: 60px;
+    margin-bottom: 8px;
+}
+
+.skeleton-line.medium {
+    width: 80%;
+}
+
+/* Responsive Skeleton */
+@media (max-width: 768px) {
+    .skeleton-container {
+        padding: 80px 20px 20px;
+    }
+    
+    .skeleton-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .skeleton-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .skeleton-image {
+        height: 200px;
+    }
+}
+/* ============================================
+   END SKELETON STYLES
+   ============================================ */
+
+/* Loading State */
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(248, 250, 252, 0.95);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    overflow-y: auto;
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #e2e8f0;
+    border-top-color: #0d9488;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-overlay p {
+    color: #64748b;
+    font-size: 16px;
+}
+
+/* Error Banner */
+.error-banner {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+    padding: 16px 24px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 150;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.retry-btn {
+    background: #dc2626;
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: 8px;
+}
+
+.retry-btn:hover {
+    background: #b91c1c;
 }
 
 /* Main Content */
@@ -584,6 +1071,12 @@ const formatPrice = (price) => {
     border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
+.status-badge.cancelled {
+    background: rgba(239, 68, 68, 0.15);
+    color: #dc2626;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
 .order-info {
     padding: 24px;
     flex: 1;
@@ -626,7 +1119,7 @@ const formatPrice = (price) => {
     line-height: 1.5;
     margin-bottom: 16px;
     display: -webkit-box;
-    /* -webkit-line-clamp: 2; */
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -835,6 +1328,10 @@ const formatPrice = (price) => {
     color: #d97706;
 }
 
+.status-text.cancelled {
+    color: #dc2626;
+}
+
 .progress-bar {
     height: 8px;
     background: #e2e8f0;
@@ -978,14 +1475,6 @@ const formatPrice = (price) => {
 
 /* Responsive */
 @media (max-width: 768px) {
-    .header {
-        padding: 0 20px;
-    }
-
-    .nav {
-        display: none;
-    }
-
     .main-content {
         padding: 80px 20px 20px;
     }
@@ -1009,6 +1498,10 @@ const formatPrice = (price) => {
 
     .orders-container.list .order-description {
         display: -webkit-box;
+    }
+
+    .order-sidebar {
+        max-width: 100%;
     }
 }
 </style>
