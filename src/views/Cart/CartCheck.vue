@@ -178,7 +178,7 @@ const disable = computed(() => {
 // Checkout
 const btnCheckOut = () => {
     if (!disable.value) {
-        router.push('/checkout');
+        router.push('/cart');
     } else {
         notifier.info('Your cart is empty');
     }
