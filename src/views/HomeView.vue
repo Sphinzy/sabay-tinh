@@ -10,7 +10,7 @@
               <div class="hero-content">
                 <h1 class="display-5 mb-3 text-white">
                   Shop with
-                  <span class="hero-text display-1 fw-bold">SabayJay</span>
+                  <span class="hero-text display-1 fw-bold">SabayTinh</span>
                 </h1>
                 <p class="lead mb-4 text-white-50 lh-base">
                   Explore great deals or start selling your products with ease —
@@ -109,7 +109,7 @@
     <div class="row g-4">
       <div
         class="col-sm-6 col-md-4 col-xl-3"
-        v-for="product in productStore.products.slice(36, 44)"
+        v-for="product in productStore.products.slice(28, 36)"
         :key="product.id"
       >
         <RouterLink
@@ -135,7 +135,9 @@
         View All Products
       </router-link>
     </div>
+
   </div>
+  <Footer></Footer>
 
   
 </template>
@@ -144,6 +146,7 @@ import BaseCard from "@/components/ui/BaseCard.vue";
 import { onMounted } from "vue";
 import { useProductStore } from "@/stores/productStore";
 import Navbar from "@/components/layout/NavBar.vue";
+import Footer from "@/components/layout/Footer.vue";
 
 const productStore = useProductStore();
 
@@ -173,7 +176,12 @@ onMounted(async () => {
 }
 
 .hero-text {
-  color: var(--bs-main);
+  font-weight: 700;
+
+  background: linear-gradient(90deg, #1E3A8A, #4F46E5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
 }
 
 .btn-main-hero {

@@ -4,7 +4,8 @@ import axios from "axios";
 const api = axios.create({
     baseURL: 'https://ecommerce201.csm.linkpc.net',
     headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data"
     }
 })
 
