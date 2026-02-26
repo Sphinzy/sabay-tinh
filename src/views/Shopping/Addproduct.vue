@@ -7,8 +7,7 @@
         <div class="col-lg-8">
           <h3 class="fw-bold mb-2">List an Item</h3>
           <p class="text-secondary fs-5">
-          Please fill in your sales information here.
-          
+            Please fill in your sales information here.
           </p>
         </div>
       </div>
@@ -92,7 +91,12 @@
                   </div>
 
                   <div class="col-md-6">
-                    <label class="form-label fw-semibold">Category</label>
+                    <div class="d-flex justify-content-between">
+                      <label class="form-label fw-semibold">Category</label>
+                      <RouterLink to="/catrgory" class="text-decoration-none"
+                        >Add new categories</RouterLink
+                      >
+                    </div>
                     <select
                       v-model="form.category_id"
                       class="form-select custom-input py-3"
@@ -109,7 +113,7 @@
                   </div>
 
                   <div class="col-md-6">
-                    <label class="form-label fw-semibold">Asking Price</label>
+                    <label class="form-label fw-semibold">Product's Price</label>
                     <div class="input-group">
                       <span class="input-group-text bg-light border-0 px-3"
                         >$</span
@@ -128,7 +132,7 @@
               <section class="form-section mb-5">
                 <div class="d-flex align-items-center mb-4">
                   <div class="section-num me-3">2</div>
-                  <h5 class="fw-bold mb-0">Description </h5>
+                  <h5 class="fw-bold mb-0">Description</h5>
                 </div>
 
                 <div class="col-12">
@@ -150,7 +154,7 @@
                   @click="router.back()"
                   class="btn btn-link btn-outline-main text-muted text-decoration-none fw-semibold"
                 >
-                  Cancel 
+                  Cancel
                 </button>
                 <button
                   type="submit"
@@ -159,9 +163,9 @@
                 >
                   <span
                     v-if="loading"
-                    class="spinner-border btn-main  spinner-border-sm me-2"
+                    class="spinner-border btn-main spinner-border-sm me-2"
                   ></span>
-                  <span v-else 
+                  <span v-else
                     >Publish product <i class="bi bi-arrow-right ms-2"></i
                   ></span>
                 </button>
@@ -175,9 +179,8 @@
 </template>
 
 <style scoped>
-
 .text-sell {
-   color: var(--bs-main)
+  color: var(--bs-main);
 }
 .btn-sell {
   background: var(--bs-main);
@@ -195,7 +198,6 @@
   min-height: 100vh;
 }
 
-
 .section-num {
   width: 32px;
   height: 32px;
@@ -208,7 +210,6 @@
   font-weight: 800;
   font-size: 0.85rem;
 }
-
 
 .upload {
   border: 2px dashed #d1d5db;
@@ -256,7 +257,6 @@
   border-radius: 10px;
   z-index: 10;
 }
-
 
 .custom-input {
   border: 1px solid #e5e7eb;
@@ -311,6 +311,9 @@ const handleImage = (event) => {
   if (file) {
     form.image = file;
     imagePreview.value = URL.createObjectURL(file);
+   
+
+    
   }
 };
 
@@ -338,9 +341,12 @@ const handleSubmit = async () => {
   formData.append("image", form.image);
 
   try {
-    await api.post("api/products", formData);
-    notify().success("Product listed successfully!");
-    router.push("/shop");
+    
+   let res =  await api.post("api/products", formData);
+   console.log(res);
+   
+    // notify().success("Product listed successfully!");
+    // router.push("/shop");
   } catch (error) {
     notify().error("Failed to post product");
   } finally {
