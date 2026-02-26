@@ -345,8 +345,8 @@ const handleSubmit = async () => {
    let res =  await api.post("api/products", formData);
    console.log(res);
    
-    // notify().success("Product listed successfully!");
-    // router.push("/shop");
+    notify().success("Product listed successfully!");
+    router.push("/shop");
   } catch (error) {
     notify().error("Failed to post product");
   } finally {
