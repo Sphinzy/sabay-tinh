@@ -119,6 +119,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStores } from "@/stores/auth";
+import { notify } from "@/utils/toast";
 
 const router = useRouter();
 const auth = useAuthStores();
@@ -136,7 +137,7 @@ const errors = ref({});
 
 const showPassword = ref(false);
 const showConfirmPassword = ref(false);
-
+const notifier = notify();
 const togglePassword = () => {
   showPassword.value = !showPassword.value;
 };
@@ -148,11 +149,11 @@ const toggleConfirmPassword = () => {
 function validateForm() {
   errors.value = {};
 
-  if (!form.value.email) errors.value.email = "Email is required";
-  if (!form.value.name) errors.value.name = "Name is required";
-  if (!form.value.password) errors.value.password = "Password is required";
+  if (!form.value.email) notifier.error('Email is required');
+  if (!form.value.name) notifier.error('Name is required');
+  if (!form.value.password) notifier.error('Password is required');
   if (form.value.password !== form.value.confirmPassword)
-    errors.value.confirmPassword = "Passwords do not match";
+    notifier.error("Passwords do not match") ;
 
   return Object.keys(errors.value).length === 0;
 }
@@ -170,10 +171,10 @@ async function handleRegister() {
       password_confirmation: form.value.confirmPassword,
     });
 
-    alert("Register success");
+    notifier.success("Register success");
     router.push("/login");
   } catch (error) {
-    alert(error.response?.data?.message || "Register failed");
+    notifier.error(error.response?.data?.message || "Register failed");
   } finally {
     isLoading.value = false;
   }

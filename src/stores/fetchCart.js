@@ -1,19 +1,26 @@
 import api from "@/api/http";
 import { defineStore } from "pinia";
-import { reactive, ref } from "vue";
+import { computed, reactive, ref } from "vue";
 
 
 export const useCartStore = defineStore('cart', () => {
 
     const carts = ref(null)
     const stallCarts = ref([])
+    const cart = ref(null)
+
+    // GETTER (auto reactive)
+    const totalAmount = computed(() => {
+        return cart.value?.total || 0
+    })
     
     async function fetchCart() {
         try {
             const res = await api.get('/api/profile/carts')
             carts.value = res.data.data
             stallCarts.value = res.data.data;
-            // console.log(res.data.data);
+            cart.value = res.data.data
+            // console.log(carts.value);
         } catch (error) {
             console.error(error);
         }
@@ -51,5 +58,5 @@ export const useCartStore = defineStore('cart', () => {
     }
 
 
-    return {fetchCart, carts, stallCarts, increment, decrement, removeItem}
+    return { fetchCart, carts, stallCarts, increment, decrement, removeItem, totalAmount }
 })

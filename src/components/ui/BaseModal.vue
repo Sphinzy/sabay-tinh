@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- Modal -->
-        <div class="modal fade show d-block"  style="background-color: rgba(0,0,0,0.5);" @click.self="$emit('close')">
+        <div class="modal fade show d-block"  style="background-color: rgba(0,0,0,0.3);" @click.self="$emit('close')">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-body">

@@ -34,7 +34,7 @@
 
                   <div class="input-group position-relative">
                     <input v-model="password" :type="passwordType"
-                      class="form-control pe-5"
+                      class="form-control pe-5 rounded-3"
                       placeholder="Enter your password" />
 
                     <span class="password-eye" @click="togglePassword">

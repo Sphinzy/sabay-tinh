@@ -26,6 +26,37 @@
                   <div class="text-muted small">rating</div>
                 </div>
               </div>
+
+            </div>
+
+            <div class="position-absolute" style="right: 80px; top: 300px;">
+              <!-- Logout Button -->
+              <button class="btn btn-danger" @click="isLogout = true">
+                <i class="bi bi-box-arrow-left"></i>
+              </button>
+
+              <!-- BaseModal for Logout -->
+              <BaseModal v-if="isLogout" title="Confirm Logout" @close="isLogout = false">
+                <!-- Content Slot -->
+                <template #content>
+                  <div class="text-center py-3">
+                    <i class="bi bi-exclamation-triangle-fill text-warning fs-1 mb-3"></i>
+                    <p class="mb-0">Are you sure you want to <strong>logout</strong> from your account?</p>
+                  </div>
+                </template>
+
+                <!-- Footer Slot -->
+                <template #footer>
+                  <div class="d-flex justify-content-center gap-2">
+                    <button class="btn btn-light rounded-pill px-4" @click="isLogout = false">
+                      Cancel
+                    </button>
+                    <button class="btn btn-danger rounded-pill px-4" @click="Logout">
+                      Logout
+                    </button>
+                  </div>
+                </template>
+              </BaseModal>
             </div>
           </div>
 
@@ -184,7 +215,7 @@
                   </div>
 
                   <div v-if="loadingProducts" class="text-center py-4">
-                    Loading products...
+                    <DotLoading></DotLoading>
                   </div>
 
                   <div v-else-if="errorProducts" class="alert alert-danger">
@@ -197,9 +228,28 @@
                     </div>
 
                     <div v-else class="col-sm-6 col-md-4 col-xl-3" v-for="own in maybeArray" :key="own.id">
-                      <router-link class="text-decoration-none" :to="'/product-detail/' + own.id">
-                        <BaseCard :item="own" />
-                      </router-link>
+                      <!-- <router-link class="text-decoration-none" :to="'/product-detail/' + own.id"> -->
+                      <BaseCard :item="own">
+
+                        <template #action>
+                          <router-link :to="`/updateproduct/${own.id}`" class="btn border-0"><i
+                              class="bi  bi-pencil-square fs-5 text-main"></i></router-link>
+                          <button class="btn border-0" @click="openDeleteModal(own.id)">
+                            <i class="bi bi-trash fs-5 text-danger"></i>
+                          </button>
+                        </template>
+                      </BaseCard>
+                      <!-- </router-link> -->
+                      <!-- Delete Modal -->
+                      <BaseModal v-if="isDelete" title="Delete Item" @close="isDelete = false">
+                        <template #content>
+                          <p>Do you want to delete <strong>{{ itemToDeleteTitle }}</strong>?</p>
+                        </template>
+                        <template #footer>
+                          <button class="btn btn-outline-secondary me-2" @click="isDelete = false">Cancel</button>
+                          <button class="btn btn-danger" @click="handleDelete(deleteId)">Delete</button>
+                        </template>
+                      </BaseModal>
                     </div>
 
                   </div>
@@ -213,6 +263,8 @@
                   <NoDataFound />
                 </div>
                 <div v-else>
+                  <h5 class="fw-bold">Seller Order</h5>
+                  <p>Manage and review pending seller orders</p>
                   <SellProduct />
                 </div>
               </div>
@@ -235,7 +287,7 @@
                   </div>
 
                   <div v-if="loadingPurchased" class="text-center py-4">
-                    Loading history...
+                    <DotLoading></DotLoading>
                   </div>
 
                   <div v-else-if="errorPurchased" class="alert alert-danger">
@@ -245,7 +297,7 @@
                   <div v-else class="d-flex flex-column gap-3">
                     <div class="row">
 
-                      <div v-if="maybeArray.length === 0" class="text-center w-100">
+                      <div v-if="countPro == 0" class="text-center w-100">
                         <NoDataFound />
                       </div>
 
@@ -257,7 +309,7 @@
                               <th>Product Name</th>
                               <th>Seller Name</th>
                               <th>Price</th>
-                              <th>Email</th>
+                              <th>Phone</th>
                               <th>QTY</th>
                               <th>Status</th>
                             </tr>
@@ -268,7 +320,7 @@
                               <td>{{ textCut(order.product.title) }}</td>
                               <td>{{ textCut(order.seller.name) }}</td>
                               <td>${{ order.price }}</td>
-                              <td>{{ order.buyer?.email || 'N/A' }}</td>
+                              <td>{{ order.buyer?.phone || 'N/A' }}</td>
                               <td>{{ order.qty }}</td>
                               <td>
                                 <span class="badge" :class="{
@@ -320,6 +372,7 @@ import { Modal } from "bootstrap";
 // import { useOwnProducts } from "@/stores/ownProduct"
 // const ownProduct = useOwnProducts();
 /* UI demo */
+
 const coverUrl =
   "https://images.unsplash.com/photo-1458668383970-8ddd3927deed?q=80&w=1600&auto=format&fit=crop"
 
@@ -372,6 +425,48 @@ const fetchMyProducts = async (page = 1, perPage = 20) => {
       err?.response?.data?.message || err?.message || "Failed to load products"
   } finally {
     loadingProducts.value = false
+  }
+}
+import { defineProps } from "vue"
+
+const props = defineProps({
+  item: Object
+})
+const isDelete = ref(false);
+const deleteId = ref(null);
+const cartStore = useCartStore();
+const auth = useAuthStores();
+// Open delete modal
+const openDeleteModal = (id) => {
+  deleteId.value = id;
+  isDelete.value = true;
+};
+//delete
+const handleDelete = async (id) => {
+  try {
+    await api.delete(`/api/products/${id}`);
+    notifier.success("Item deleted");
+  } catch (error) {
+    notifier.error("Delete failed");
+  } finally {
+    isDelete.value = false;
+    fetchMyProducts();
+  }
+};
+const isLogout = ref(false)
+
+const handleLogout = () => {
+  // perform logout logic
+  console.log("Logging out...")
+  isLogout.value = false
+}
+const Logout = async () => {
+  try {
+    await auth.Logout();
+    router.push('/login');
+    notifier.success('Account has logout')
+  } catch (error) {
+    notifier.error(error);
   }
 }
 
@@ -450,6 +545,11 @@ let location = ref("");
 import { watch } from "vue";
 import { notify } from "@/utils/toast"
 import NoDataFound from "@/components/Skeleton/NoDataFound.vue"
+import DotLoading from "@/components/Skeleton/DotLoading.vue"
+import BaseModal from "@/components/ui/BaseModal.vue"
+import { useCartStore } from "@/stores/fetchCart"
+import router from "@/router"
+import { useAuthStores } from "@/stores/auth"
 
 
 
@@ -485,41 +585,68 @@ const handleImage = (event) => {
   }
 };
 
-const removeImage = () => {
-  imagePreview.value = null;
-  selectedFile.value = null;
-};
+const removeImage = async () => {
+  try {
+    await api.delete('/api/profile/image')
+
+    imagePreview.value = null
+    selectedFile.value = null
+
+    notifier.success("Image removed successfully")
+
+    await profile.getProfile() // refresh profile
+  } catch (error) {
+    notifier.error("Failed to remove image")
+  }
+}
 
 const saveProfile = async () => {
-  const formData = new FormData();
-  formData.append("name", name.value);
-  formData.append("email", email.value);
-  formData.append("phone", phone.value);
-  formData.append("location", location.value);
-
-  if (selectedFile.value) {
-    formData.append("image", selectedFile.value);
-  }
-
   try {
-    await api.put('/api/profile/info', formData)
-    dismiss.value = true;
-    notifier.success('Updated')
-    closeBtn.value.click();
+    dismiss.value = true
+
+    // Update text data
+    await api.put('/api/profile/info', {
+      name: name.value,
+      email: email.value,
+      phone: phone.value,
+      location: location.value
+    })
+
+    // Upload image if exists
+    if (selectedFile.value) {
+      const imageData = new FormData()
+      imageData.append("image", selectedFile.value)
+
+      await api.post('/api/profile/image', imageData)
+    }
+
+    notifier.success("Profile updated")
+    closeBtn.value?.click()
 
   } catch (error) {
-    dismiss.value = false;
-    notifier.error('Update Failed')
+    dismiss.value = false
+    notifier.error("Update failed")
   } finally {
-    profile.getProfile();
+    await profile.getProfile()
   }
-};
+}
 
+const countPro = ref(0)
+const historyPro = async () => {
+  try {
+    const res = await api.get('/api/profile/products')
+    countPro.value = res.data.data.name;
+  } catch (error) {
+    notifier.error(error)
+  }
+}
 console.log(profile.myPayment.length);
 /* load */
 onMounted(() => {
   // load products first
   fetchMyProducts(1, 20)
+  historyPro();
+  cartStore.fetchCart()
   profile.getProfile()
 
   // load history when tab opened

@@ -79,7 +79,7 @@
             <button class="btn btn-cart btn-lg rounded-pill me-2 text-center" @click="handleAddToCart(route.params.id)">
               <i class="bi bi-cart-plus "></i>
             </button>
-            <button class="btn btn-buy btn-lg rounded-pill">Buy Now</button>
+            <button class="btn btn-buy btn-lg rounded-pill" @click="buyNow(route.params.id)">Buy Now</button>
           </div>
         </div>
       </div>
@@ -158,7 +158,19 @@ const handleAddToCart = async (productId) => {
     isAdding.value = false;
   }
 };;
+const buyNow = async (productId) => {
+  try {
+    // Add product to cart
+    await api.post('/api/carts', { product_id: productId, qty: 1 });
 
+    // Navigate to the checkout page
+    router.push('/cart');
+
+  } catch (error) {
+    console.error(error.response?.data || error);
+    notifier.error('Failed to add product to checkout');
+  }
+};
 onMounted(fetchProductDetail);
 </script>
 <style scoped>

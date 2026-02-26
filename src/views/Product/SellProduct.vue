@@ -5,8 +5,7 @@
             <section>
                 <div class="container">
                     <div class="row">
-                        <h3>Seller Order</h3>
-                        <p>Manage and review pending seller orders</p>
+                        
                         <div class="col-lg-12">
 
                             <table class="table table-striped text-center">
@@ -15,7 +14,7 @@
                                         <th>Product Name</th>
                                         <th>Customer Name</th>
                                         <th>Price</th>
-                                        <th>Email</th>
+                                        <th>Phone</th>
                                         <th>QTY</th>
                                         <th>Transaction</th>
                                         <th>Status</th>
@@ -55,15 +54,15 @@
                                         <td>{{ textCut(order.product.title) }}</td>
                                         <td>{{ textCut(order.buyer.name) }}</td>
                                         <td>${{ order.price }}</td>
-                                        <td>{{ order.buyer?.email || 'N/A' }}</td>
+                                        <td>{{ order.buyer?.phone || 'N/A' }}</td>
                                         <td>{{ order.qty }}</td>
 
                                         <!-- Status Badge -->
                                         <td>
                                             <!-- Button to open modal -->
-                                            <button type="button" class="btn" data-bs-toggle="modal"
+                                            <button type="button" class="btn border-0 " data-bs-toggle="modal"
                                                 :data-bs-target="`#exampleModal${order.id}`">
-                                                <i class="bi bi-arrow-repeat text-primary me-2 fs-4"></i>
+                                                <i class="bi bi-cloud-upload text-main me-2 fs-4"></i>
                                             </button>
 
                                             <!-- Modal -->

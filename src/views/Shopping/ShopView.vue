@@ -31,6 +31,7 @@
   </div>
 </template>
 <script setup>
+import "@/assets/style.css";
 import { onMounted, computed, ref } from "vue";
 import Navbar from "@/components/layout/NavBar.vue";
 import BaseCard from "@/components/ui/BaseCard.vue";
@@ -47,7 +48,6 @@ const notifier = notify();
 const isLoading = ref(false);
 const isAddingToCart = ref(false);
 // Reactive computed cart count
-const cartCount = computed(() => cartStore.carts?.items?.length || 0);
 
 // Add product to cart
 const handleAddToCart = async (productId) => {

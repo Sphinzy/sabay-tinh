@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import api from "@/api/http";
 
 import { ref } from "vue";
-console.log(api);
+// console.log(api);
 export const useProductStore = defineStore("product", () => {
   const products = ref([]);
   async function fetchProducts() {

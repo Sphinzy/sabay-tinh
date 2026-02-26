@@ -2,7 +2,7 @@
   <div class="seller-dashboard">
     <Navbar />
 
-    <div class="container py-10">
+    <div class="container pt-10">
       <div class="row mb-5">
         <div class="col-lg-8">
           <h3 class="fw-bold mb-2">List an Item</h3>
@@ -158,7 +158,7 @@
                 </button>
                 <button
                   type="submit"
-                  class="btn btn-sell px-5 py-3 rounded-pill fw-bold"
+                  class="btn btn-sell px-4 rounded-pill fw-bold"
                   :disabled="loading"
                 >
                   <span
@@ -276,6 +276,7 @@
 }
 </style>
 <script setup>
+import "@/assets/style.css";
 import Navbar from "@/components/layout/NavBar.vue";
 import { ref, reactive, onMounted } from "vue";
 import api from "@/api/http";
@@ -345,8 +346,8 @@ const handleSubmit = async () => {
    let res =  await api.post("api/products", formData);
    console.log(res);
    
-    // notify().success("Product listed successfully!");
-    // router.push("/shop");
+    notify().success("Product listed successfully!");
+    router.push("/shop");
   } catch (error) {
     notify().error("Failed to post product");
   } finally {

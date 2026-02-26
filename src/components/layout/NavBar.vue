@@ -1,7 +1,7 @@
 <template>
-  <header class="position-fixed w-100" style="z-index: 100;">
-    <nav class="navbar bg-body">
-      <div class="container">
+<header class="fixed-top">
+  <nav class="navbar navbar-expand-lg">
+      <div class="container custom-navbar rounded-pill py-1">
         <div class="d-flex">
           <!-- Mobile menu button -->
           <button
@@ -77,7 +77,7 @@
   <!-- ================= OFFCANVAS (LEFT) ================= -->
   <div class="offcanvas offcanvas-start bg-card text-sub-main" tabindex="-1" id="offcanvasMenu">
     <div class="offcanvas-header">
-      <h5>Satsya</h5>
+      <!-- <h5>Satsya</h5> -->
       <button class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
     </div>
 
@@ -102,13 +102,14 @@
 
 <script setup>
 import "@/assets/style.css";
+import { useAuthStores } from "@/stores/auth";
 import { useCartStore } from "@/stores/fetchCart";
 import { useProfileStore } from "@/stores/profile";
 import { computed, onMounted, ref } from "vue"
 const prof = useProfileStore();
 const cartStore = useCartStore();
 const cartCount = computed(() => cartStore.carts?.items?.length || 0);
-
+const auth = useAuthStores();
 // const { cartCount } = defineProps({
 //   cartCount: {
 //     type: Number,
@@ -119,10 +120,68 @@ onMounted(() => {
   prof.getProfile();
   cartStore.fetchCart()
 })
-const isLoggedIn = ref(true)
+
+const isLoggedIn = ref(auth.isLoggedIn)
 </script>
 
 <style scoped>
+/* ================= NAVBAR GLASS EFFECT ================= */
+
+.custom-navbar {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+
+  transition: all 0.3s ease;
+}
+
+/* When scrolling */
+.custom-navbar.scrolled {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Prevent content hiding under navbar */
+body {
+  padding-top: 90px;
+}
+
+/* ================= CART BADGE ================= */
+
+.cart-link {
+  position: relative;
+}
+
+.cart-badge {
+  position: absolute;
+  top: 1px;
+  right: -10px;
+
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 11px;
+
+  background-color: #dc3545;
+  color: white;
+
+  border-radius: 50px;
+  border: 2px solid white;
+
+  transition: transform 0.2s ease;
+}
+
+.cart-link:hover .cart-badge {
+  transform: scale(1.1);
+}
 .cart-link {
   position: relative;
 }

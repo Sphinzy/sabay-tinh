@@ -1,7 +1,7 @@
 <template>
-  <div class="py-10">
+  <div>
     <NavBar></NavBar>
-    <main class="admin-main">
+    <main class="admin-main pt-13">
       <div class="container shadow-card">
         <div class="header-flex">
           <div class="title-area">
@@ -33,8 +33,8 @@
 
         <hr class="divider" />
 
-        <div class="table-responsive">
-          <table class="ecommerce-table">
+        <div class="table-responsive overflow-scroll"  style="height: 500px;">
+          <table class="ecommerce-table ">
             <thead>
               <tr>
                 <th width="80">ID</th>

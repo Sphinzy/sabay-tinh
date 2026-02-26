@@ -144,8 +144,98 @@ body {
 
 .nav-item .nav-link:hover,
 .nav-link.active {
-    color: var(--bs-color-light) !important;
-    background-color: var(--bs-main) !important;
+    color: var(--bs-main) !important;
+    font-weight: bolder ;
+    /* background-color: var(--bs-main) !important; */
+}
+/* ================= NAVBAR GLASS EFFECT ================= */
+
+.custom-navbar {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+
+    transition: all 0.3s ease;
+}
+
+/* When scrolling */
+.custom-navbar.scrolled {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Prevent content hiding under navbar */
+body {
+    padding-top: 90px;
+}
+
+/* ================= CART BADGE ================= */
+
+.cart-link {
+    position: relative;
+}
+
+.cart-badge {
+    position: absolute;
+    top: 1px;
+    right: -10px;
+
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 11px;
+
+    background-color: #dc3545;
+    color: white;
+
+    border-radius: 50px;
+    border: 2px solid white;
+
+    transition: transform 0.2s ease;
+}
+
+.cart-link:hover .cart-badge {
+    transform: scale(1.1);
+}
+
+.cart-link {
+    position: relative;
+}
+
+.cart-badge {
+    position: absolute;
+    top: 1px;
+    right: -10px;
+
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 11px;
+
+    background-color: #dc3545;
+    color: white;
+
+    border-radius: 50px;
+    border: 2px solid white;
+
+    transition: transform 0.2s ease;
+}
+
+.cart-link:hover .cart-badge {
+    transform: scale(1.1);
 }
 .dropdown-menu {
     display: none !important;
@@ -254,7 +344,7 @@ input.form-control:focus {
 /* Placeholder styling */
 input.form-control::placeholder {
     color: var(--bs-sub-main);
-    opacity: 1;
+    opacity: 0.5;
 }
 
 /* Error state */

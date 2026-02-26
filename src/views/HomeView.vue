@@ -103,39 +103,46 @@
     </div>
   </div>
 
-  <!-- Featured Products -->
-  <div class="container py-5 text-main ">
+<!-- Featured Products -->
+  <div class="container py-5 text-main">
     <h2 class="text-center mb-5 fw-bold">Featured Products</h2>
+
     <div class="row g-4">
-      <div
-        class="col-sm-6 col-md-4 col-xl-3"
-        v-for="product in productStore.products.slice(28, 36)"
-        :key="product.id"
-      >
-        <RouterLink
-          :to="`/product-detail/${product.id}`"
-          class="text-decoration-none"
+
+      <!-- SKELETON WHILE LOADING -->
+      <template v-if="isLoading">
+        <div
+          v-for="n in 8"
+          :key="n"
+          class="col-sm-6 col-md-4 col-xl-3"
         >
-          <BaseCard :item="product">
-            <template #action="{ product }">
-              <button class="btn-add-plus">
-                <i class="bi bi-cart-plus-fill"></i>
-              </button>
-            </template>
-          </BaseCard>
-        </RouterLink>
-      </div>
-    </div>
+          <BaseCardSkeleton/>
+        </div>
+      </template>
 
-    <div class="text-center mt-5">
-      <router-link
-        to="/shop"
-        class="btn btn-outline-primary px-4 py-2 rounded-pill"
-      >
-        View All Products
-      </router-link>
-    </div>
+      <!-- REAL PRODUCTS -->
+      <template v-else>
+        <div
+          class="col-sm-6 col-md-4 col-xl-3"
+          v-for="product in productStore.products.slice(0,8)"
+          :key="product.id"
+        >
+          <RouterLink
+            :to="`/product-detail/${product.id}`"
+            class="text-decoration-none"
+          >
+            <BaseCard :item="product">
+              <template #action>
+                <button class="btn-add-plus" @click.stop.prevent="handleAddToCart(product.id)">
+                    <i class="bi bi-cart-plus-fill"></i>
+                </button>
+              </template>
+            </BaseCard>
+          </RouterLink>
+        </div>
+      </template>
 
+    </div>
   </div>
   <Footer></Footer>
 
@@ -143,16 +150,57 @@
 </template>
 <script setup>
 import BaseCard from "@/components/ui/BaseCard.vue";
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { useProductStore } from "@/stores/productStore";
 import Navbar from "@/components/layout/NavBar.vue";
 import Footer from "@/components/layout/Footer.vue";
-
+import BaseCardSkeleton from "@/components/Skeleton/BaseCardSkeleton.vue"; 
+import { notify } from "@/utils/toast";
+import { useCartStore } from "@/stores/fetchCart";
+import api from "@/api/http";
+const notifier = notify();
+const isLoading = ref(false);
+const cartStore = useCartStore();
 const productStore = useProductStore();
+const handleAddToCart = async (productId) => {
+  try {
+    // Check if the product is already in the cart
+    const existingItem = cartStore.carts?.items?.find(
+      item => item.product_id === productId || item.product?.id === productId
+    );
+    console.log(productId);
 
+    if (existingItem) {
+      notifier.info('Product is already in the cart'); // show notifier
+      return; // do not add again
+    }
+
+    const formData = new FormData();
+    formData.append("product_id", productId);
+    formData.append("qty", 1);
+
+    await api.post("/api/carts", formData);
+    notifier.success('Product Added');
+
+    // Refresh cart
+    await cartStore.fetchCart();
+  } catch (error) {
+    console.error("Failed to add to cart:", error);
+    notifier.error('Failed to add product'); // optional error notifier
+  } finally {
+    isAddingToCart.value = false; // stop loader
+  }
+};
 
 onMounted(async () => {
-  await productStore.fetchProducts();
+  isLoading.value = true;
+  try {
+    await productStore.fetchProducts();
+  } catch (error) {
+    notifier.error('Not Found')
+  } finally {
+    isLoading.value = false;
+  }
 });
 </script>
 

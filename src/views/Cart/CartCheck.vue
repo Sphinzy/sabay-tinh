@@ -8,9 +8,14 @@
 
     <div v-else class="container py-14">
         <h3 class="mb-4 fw-bold">Shopping Cart</h3>
-
-        <div class="row">
+        <div v-if="cartStore.stallCarts?.items == 0" class="row mt-20">
+            <NoDataFound></NoDataFound>
+        </div>
+        <div v-else class="row">
             <!-- CART ITEMS -->
+            <!-- <div v-if="cartStore.stallCarts?.items == 0" class="col-lg-8">
+                <NoDataFound></NoDataFound>
+            </div> -->
             <div class="col-lg-8">
                 <div class="card mb-4 shadow-sm border-0 cart-item" v-for="cart in cartStore.stallCarts?.items || []"
                     :key="cart.id">
@@ -101,6 +106,7 @@
 import api from "@/api/http";
 import NavBar from "@/components/layout/NavBar.vue";
 import Loading from "@/components/Skeleton/Loading.vue";
+import NoDataFound from "@/components/Skeleton/NoDataFound.vue";
 import BaseModal from "@/components/ui/BaseModal.vue";
 import { useCartStore } from "@/stores/fetchCart";
 import { notify } from "@/utils/toast";
@@ -174,7 +180,6 @@ const subtotal = computed(() => {
 const disable = computed(() => {
     return !cartStore.stallCarts?.items?.length;
 });
-
 // Checkout
 const btnCheckOut = () => {
     if (!disable.value) {
